@@ -1,0 +1,40 @@
+.navie {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+
+    --bs-gutter-x: 24px;
+    --bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
+    margin-right: auto;
+    margin-left: auto;
+
+
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+.logoName {
+    height: 100%;
+    width: 100px;
+    margin: 0;
+    margin-left: 7px;
+
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: orangered;
+}
+
+#alertText {
+    color: black;
+    
+    margin: 0;
+    margin-left: 11px;
+
+    font-size: calc(min(3rem, 11vw));
+    font-weight: 690;
+}

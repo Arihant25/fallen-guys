@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fallen Guys</title>
+  <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
+  <link rel="stylesheet" href="../assets/css/styles.min.css" />
+  <link rel="stylesheet" href="../assets/css/our.css" />
+</head>
+
+<body>
+  <div class="page-wrapper mini-sidebar" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6"
+    data-sidebartype="full mini-sidebar" data-sidebar-position="fixed" data-header-position="fixed">
+    <!--  Main Content -->
+    <div class="body-wrapper" style="margin-left: 0">
+      <!--  Header -->
+      <header class="app-header" , style="width: 100%">
+        <div class="navie" , style="width: 100%; padding: 0">
+          <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+              <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                <img src="../assets/images/logos/favicon.png" alt="" width="35" height="35" class="rounded-circle" />
+                <p class="logoName" style="font-size: 17px;">Fallen Guys</p>
+              </ul>
+            </div>
+          </nav>
+
+          <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+              <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                <a href="modify.html" class="btn btn-primary" style="
+                        background-color: rgb(229, 108, 192);
+                        border-color: rgb(49, 108, 192);
+                      ">
+                  Modify Settings
+                </a>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      <div class="container-fluid">
+        <!--  Row 1 : Current Status -->
+        <div class="row">
+          <div class="col-lg-12 d-flex align-items-stretch">
+            <div class="card w-100">
+              <div class="card-body p-4" style="
+                      display: flex;
+                      justify-content: center;
+                      align-items: right;
+                    " id="fallAlert">
+                <img src="../assets/images/loading.gif" alt="loading" id="alertLogo" width="69px" height="69px" />
+                <p id="alertText">Loading...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2 : Sensor Readings -->
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="row">
+              <!-- Accelerometer -->
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row align-items-start">
+                      <div class="col-8">
+                        <h5 class="card-title mb-9 fw-semibold">
+                          Accelerometer
+                        </h5>
+                        <h4 class="fw-semibold mb-3" id="curAccelerometer">
+                          X: 0.00, Y: 0.00, Z: 0.00
+                        </h4>
+                      </div>
+                      <div class="col-4">
+                        <div class="d-flex justify-content-end">
+                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                            style="
+                                  width: 47px;
+                                  height: 47px;
+                                  border-radius: 50%;
+                                  background-color: #e58d06;
+                                ">
+                            <img width="32" height="32"
+                              src="https://img.icons8.com/external-outline-black-m-oki-orlando/32/external-acceleration-physics-basic-outline-outline-black-m-oki-orlando.png"
+                              alt="external-acceleration-physics-basic-outline-outline-black-m-oki-orlando" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="accelerometer"></div>
+                </div>
+              </div>
+
+              <!-- Gyroscope -->
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row align-items-start">
+                      <div class="col-8">
+                        <h5 class="card-title mb-9 fw-semibold">
+                          Gyroscope
+                        </h5>
+                        <h4 class="fw-semibold mb-3" id="curGyroscope">
+                          X: 0.00, Y: 0.00, Z: 0.00
+                        </h4>
+                      </div>
+                      <div class="col-4">
+                        <div class="d-flex justify-content-end">
+                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                            style="
+                                  width: 47px;
+                                  height: 47px;
+                                  border-radius: 50%;
+                                  background-color: #eb9b94;
+                                ">
+                            <img width="32" height="32" src="https://img.icons8.com/ios-filled/50/FFFFFF/gyroscope.png"
+                              alt="gyroscope" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="gyroscope"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-lg-6">
+            <div class="row">
+              <!-- GPS Location -->
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body" id="gpsSection" style="cursor: pointer;">
+                    <div class="row align-items-start">
+                      <div class="col-8">
+                        <h5 class="card-title mb-9 fw-semibold">GPS Location</h5>
+                        <h4 class="fw-semibold mb-3" id="curGPS">
+                          Lat: 17.44750, Long: 78.34862
+                        </h4>
+                      </div>
+                      <div class="col-4">
+                        <div class="d-flex justify-content-end">
+                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                            style="
+                        width: 47px;
+                        height: 47px;
+                        border-radius: 50%;
+                        background-color: #5073b3;
+                      ">
+                            <img width="32" height="32" src="https://img.icons8.com/ios-filled/50/FFFFFF/marker.png"
+                              alt="gps" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="gps"></div>
+                </div>
+              </div>
+
+
+              <!-- Battery Level -->
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row align-items-start">
+                      <div class="col-8">
+                        <h5 class="card-title mb-9 fw-semibold">Battery Level</h5>
+                        <h4 class="fw-semibold mb-3" id="curBattery">
+                          42%
+                        </h4>
+                      </div>
+                      <div class="col-4">
+                        <div class="d-flex justify-content-end">
+                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                            style="
+                                  width: 47px;
+                                  height: 47px;
+                                  border-radius: 50%;
+                                  background-color: #29e7cd;
+                                ">
+                            <img width="32" height="32"
+                              src="https://img.icons8.com/ios-filled/50/FFFFFF/full-battery.png" alt="battery" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="battery"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3 : Past Alerts -->
+        <div class="row">
+          <div class="col-lg-12 d-flex align-items-stretch">
+            <div class="card w-100">
+              <div class="card-body p-4">
+                <h5 class="card-title fw-semibold">Past Alerts</h5>
+                <div class="mb-4">
+                </div>
+                <ul class="timeline-widget mb-0 position-relative mb-n5" id="alertList">
+                  <li class="timeline-item d-flex position-relative overflow-hidden" id="lastAlert">
+                    <div class="timeline-time text-dark flex-shrink-0 text-end" id="startup">
+                      <div>2024-09-16</div>
+                      <div style="padding-bottom: 5vh">12:00:00 UTC</div>
+                    </div>
+                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+                      <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
+                    </div>
+                    <div class="timeline-desc fs-3 text-dark mt-n1">
+                      Device activated
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- a centered footer text citing sources for images -->
+  <footer class="footer">
+    <div class="container">
+      <div class="text-center">
+        <p>
+          Icons by
+          <a href="https://www.flaticon.com/" title="Flaticon" target="_blank">Flaticon</a>
+          and
+          <a href="https://icons8.com/" title="Icons8" target="_blank">Icons8</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+  <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+  <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/app.min.js"></script>
+  <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+  <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+  <script>
+    document.getElementById('gpsSection').addEventListener('click', function () {
+      var gpsText = document.getElementById('curGPS').innerText;
+      var coords = gpsText.match(/Lat: ([-\d.]+), Long: ([-\d.]+)/);
+      if (coords) {
+        var lat = coords[1];
+        var long = coords[2];
+        var url = `https://www.google.com/maps?q=${lat},${long}`;
+        window.open(url, '_blank');
+      }
+    });
+  </script>
+</body>
+
+</html>
