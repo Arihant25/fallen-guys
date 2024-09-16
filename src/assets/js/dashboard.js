@@ -183,7 +183,11 @@ function FallenGuys() {
                   color: "#FFA500",
                   data: fetched_data
                     .slice(-100)
-                    .map((item) => parseFloat(item.field8).toFixed(1)),
+                    .map((item) => Math.sqrt(
+                      parseFloat(item.field1)**2 + 
+                      parseFloat(item.field2)**2 + 
+                      parseFloat(item.field3)**2
+                    ).toFixed(1)),
                 },
               ],
               stroke: {
@@ -619,36 +623,24 @@ function FallenGuys() {
                   "timeline-desc fs-3 text-dark mt-n1 fw-semibold";
                 div3.textContent = "Fall Detected! ";
 
-                var temp_details = document.createElement("span");
-                temp_details.className = "text-primary d-block fw-normal";
-                temp_details.textContent = `Temperature: ${parseFloat(
-                  fetched_data[i].field1
-                ).toFixed(1)} °C`;
-                div3.appendChild(temp_details);
-                var humidity_details = document.createElement("span");
-                humidity_details.className = "text-primary d-block fw-normal";
-                humidity_details.textContent = `Humidity: ${parseInt(
-                  fetched_data[i].field3
-                )} %`;
-                div3.appendChild(humidity_details);
-                var heatI_details = document.createElement("span");
-                heatI_details.className = "text-primary d-block fw-normal";
-                heatI_details.textContent = `Heat Index: ${parseFloat(
-                  fetched_data[i].field2
-                ).toFixed(1)} °C`;
-                div3.appendChild(heatI_details);
-                var smoke_details = document.createElement("span");
-                smoke_details.className = "text-primary d-block fw-normal";
-                smoke_details.textContent = `Smoke: ${parseInt(
-                  fetched_data[i].field5
-                )} PPM`;
-                div3.appendChild(smoke_details);
-                var flame_details = document.createElement("span");
-                flame_details.className = "text-primary d-block fw-normal";
-                flame_details.textContent = `Flame: ${parseFloat(
-                  (100 * (4095 - fetched_data[i].field7)) / 4095
-                ).toFixed(1)} %`;
-                div3.appendChild(flame_details);
+                var fallAcc = document.createElement("span");
+                fallAcc.className = "text-primary d-block fw-normal";
+                fallAcc.textContent = `Fall Acceleration: ${parseInt(
+                  fetched_data[i].field8
+                )} m/s^2`;
+                div3.appendChild(fallAcc);
+                var fallAngVel = document.createElement("span");
+                fallAngVel.className = "text-primary d-block fw-normal";
+                fallAngVel.textContent = `Angular Velocity: ${Math.sqrt(
+                  parseFloat(fetched_data[i].field4)**2 + 
+                  parseFloat(fetched_data[i].field5)**2 + 
+                  parseFloat(fetched_data[i].field6)**2
+                ).toFixed(1)} rad/s`;
+                div3.appendChild(fallAngVel);
+                var GPSLoc = document.createElement("span");
+                GPSLoc.className = "text-primary d-block fw-normal";
+                GPSLoc.textContent = `GPS Location: None`;
+                div3.appendChild(GPSLoc);
 
                 li.appendChild(div1);
                 li.appendChild(div2);
@@ -660,23 +652,23 @@ function FallenGuys() {
 
             // Check for fall, to raise alert on the webPage
             if (fetched_data[fetched_data.length - 1]["field6"] === "1") {
-              document.getElementById("fireAlert").style.backgroundColor =
+              document.getElementById("fallAlert").style.backgroundColor =
                 "rgb(168, 34, 50)";
-              document.getElementById("fireAlert").style.borderRadius = "13px";
+              document.getElementById("fallAlert").style.borderRadius = "13px";
 
               document.getElementById("alertText").innerHTML = "Fall Detected!";
               document.getElementById("alertText").style.color = "white";
 
               document.getElementById("alertLogo").src =
                 "../assets/images/logos/favicon.png";
-              document.getElementById("alertLogo").alt = "Fire Alert";
+              document.getElementById("alertLogo").alt = "Fall Alert";
             } else {
-              document.getElementById("fireAlert").style.backgroundColor =
+              document.getElementById("fallAlert").style.backgroundColor =
                 "white";
-              document.getElementById("fireAlert").style.borderRadius = "13px";
+              document.getElementById("fallAlert").style.borderRadius = "13px";
 
               document.getElementById("alertText").innerHTML = "All Good!";
-              document.getElementById("fireAlert").style.color = "black";
+              document.getElementById("fallAlert").style.color = "black";
 
               document.getElementById("alertLogo").src =
                 "../assets/images/checkmark.png";
