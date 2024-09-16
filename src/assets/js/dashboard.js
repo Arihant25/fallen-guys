@@ -30,7 +30,7 @@ function FallenGuys() {
               },
               series: [
                 {
-                  name: "Xacc",
+                  name: "X Acceleration",
                   color: "#FFA500",
                   data: fetched_data
                     .slice(-100)
@@ -60,7 +60,7 @@ function FallenGuys() {
                 },
               },
             };
-            new ApexCharts(document.querySelector("#Xacc"), Xacc).render();
+            new ApexCharts(document.querySelector("#XaccPlot"), Xacc).render();
             document.querySelector("#Xacc").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field1).toFixed(1) + " m/s^2";
 
@@ -78,7 +78,7 @@ function FallenGuys() {
               },
               series: [
                 {
-                  name: "Yacc",
+                  name: "Y Acceleration",
                   color: "#FFA500",
                   data: fetched_data
                     .slice(-100)
@@ -108,7 +108,7 @@ function FallenGuys() {
                 },
               },
             };
-            new ApexCharts(document.querySelector("#Yacc"), Yacc).render();
+            new ApexCharts(document.querySelector("#YaccPlot"), Yacc).render();
             document.querySelector("#Yacc").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field2).toFixed(1) + " m/s^2";
 
@@ -126,7 +126,7 @@ function FallenGuys() {
               },
               series: [
                 {
-                  name: "Zacc",
+                  name: "Z Acceleration",
                   color: "#FFA500",
                   data: fetched_data
                     .slice(-100)
@@ -156,7 +156,7 @@ function FallenGuys() {
                 },
               },
             };
-            new ApexCharts(document.querySelector("#Zacc"), Zacc).render();
+            new ApexCharts(document.querySelector("#ZaccPlot"), Zacc).render();
             document.querySelector("#Zacc").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field3).toFixed(1) + " m/s^2";
 
@@ -174,7 +174,7 @@ function FallenGuys() {
               },
               series: [
                 {
-                  name: "Nacc",
+                  name: "Net Acceleration",
                   color: "#FFA500",
                   data: fetched_data
                     .slice(-100)
@@ -204,7 +204,7 @@ function FallenGuys() {
                 },
               },
             };
-            new ApexCharts(document.querySelector("#Nacc"), Nacc).render();
+            new ApexCharts(document.querySelector("#NaccPlot"), Nacc).render();
             document.querySelector("#Nacc").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field8).toFixed(1) + " m/s^2";
 
@@ -222,8 +222,8 @@ function FallenGuys() {
               },
               series: [
                 {
-                  name: "XangVel",
-                  color: "#FFA500",
+                  name: "X Angular Velocity",
+                  color: "#5073b3",
                   data: fetched_data
                     .slice(-100)
                     .map((item) => parseFloat(item.field4).toFixed(1)),
@@ -252,7 +252,7 @@ function FallenGuys() {
                 },
               },
             };
-            new ApexCharts(document.querySelector("#XangVel"), XangVel).render();
+            new ApexCharts(document.querySelector("#XangVelPlot"), XangVel).render();
             document.querySelector("#XangVel").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field4).toFixed(1) + " rad/s";
 
@@ -270,8 +270,8 @@ function FallenGuys() {
               },
               series: [
                 {
-                  name: "YangVel",
-                  color: "#FFA500",
+                  name: "Y Angular Velocity",
+                  color: "#5073b3",
                   data: fetched_data
                     .slice(-100)
                     .map((item) => parseFloat(item.field5).toFixed(1)),
@@ -300,7 +300,7 @@ function FallenGuys() {
                 },
               },
             };
-            new ApexCharts(document.querySelector("#YangVel"), YangVel).render();
+            new ApexCharts(document.querySelector("#YangVelPlot"), YangVel).render();
             document.querySelector("#YangVel").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field5).toFixed(1) + " rad/s";
 
@@ -318,8 +318,8 @@ function FallenGuys() {
               },
               series: [
                 {
-                  name: "ZangVel",
-                  color: "#FFA500",
+                  name: "Z Angular Velocity",
+                  color: "#5073b3",
                   data: fetched_data
                     .slice(-100)
                     .map((item) => parseFloat(item.field6).toFixed(1)),
@@ -348,8 +348,60 @@ function FallenGuys() {
                 },
               },
             };
-            new ApexCharts(document.querySelector("#ZangVel"), ZangVel).render();
+            new ApexCharts(document.querySelector("#ZangVelPlot"), ZangVel).render();
             document.querySelector("#ZangVel").textContent =
+              parseFloat(fetched_data[fetched_data.length - 1].field6).toFixed(1) + " rad/s";
+            
+              var NangVel = {
+                chart: {
+                  id: "sparkline6",
+                  type: "area",
+                  height: 60,
+                  sparkline: {
+                    enabled: true,
+                  },
+                  group: "sparklines",
+                  fontFamily: "Plus Jakarta Sans', sans-serif",
+                  foreColor: "#adb0bb",
+                },
+                series: [
+                  {
+                    name: "Net Angular Velocity",
+                    color: "#5073b3",
+                    data: fetched_data
+                      .slice(-100)
+                      .map((item) => Math.sqrt(
+                        parseFloat(item.field4)**2 + 
+                        parseFloat(item.field5)**2 + 
+                        parseFloat(item.field6)**2
+                      ).toFixed(1)),
+                  },
+                ],
+                stroke: {
+                  curve: "smooth",
+                  width: 2,
+                },
+                fill: {
+                  colors: ["#f3feff"],
+                  type: "solid",
+                  opacity: 0.05,
+                },
+                markers: {
+                  size: 0,
+                },
+                tooltip: {
+                  theme: "dark",
+                  fixed: {
+                    enabled: true,
+                    position: "right",
+                  },
+                  x: {
+                    show: false,
+                  },
+                },
+              };
+            new ApexCharts(document.querySelector("#NangVelPlot"), NangVel).render();
+            document.querySelector("#NangVel").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field6).toFixed(1) + " rad/s";
 
             var temp = {
@@ -367,7 +419,7 @@ function FallenGuys() {
               series: [
                 {
                   name: "Temperature",
-                  color: "#FFA500",
+                  color: "#eb9b94",
                   data: fetched_data
                     .slice(-100)
                     .map((item) => parseFloat(item.field7).toFixed(1)),
@@ -396,17 +448,60 @@ function FallenGuys() {
                 },
               },
             };
-            new ApexCharts(document.querySelector("#temp"), temp).render();
+            new ApexCharts(document.querySelector("#tempPlot"), temp).render();
             document.querySelector("#temp").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field7).toFixed(1) + " °C";
 
-
-            new ApexCharts(document.querySelector("#maxnetacc"), temp).render();
+              var maxNetAcc = {
+                chart: {
+                  id: "sparkline7",
+                  type: "area",
+                  height: 60,
+                  sparkline: {
+                    enabled: true,
+                  },
+                  group: "sparklines",
+                  fontFamily: "Plus Jakarta Sans', sans-serif",
+                  foreColor: "#adb0bb",
+                },
+                series: [
+                  {
+                    name: "Max Net Acceleration",
+                    color: "#29e7cd",
+                    data: fetched_data
+                      .slice(-100)
+                      .map((item) => parseFloat(item.field8).toFixed(1)),
+                  },
+                ],
+                stroke: {
+                  curve: "smooth",
+                  width: 2,
+                },
+                fill: {
+                  colors: ["#f3feff"],
+                  type: "solid",
+                  opacity: 0.05,
+                },
+                markers: {
+                  size: 0,
+                },
+                tooltip: {
+                  theme: "dark",
+                  fixed: {
+                    enabled: true,
+                    position: "right",
+                  },
+                  x: {
+                    show: false,
+                  },
+                },
+              };
+            new ApexCharts(document.querySelector("#maxnetaccPlot"), maxNetAcc).render();
             document.querySelector("#maxnetacc").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field8).toFixed(1) + " m/s²";
 
             // =====================================
-            // Alerts
+            // Past Alerts
             // =====================================
             var alertList = document.getElementById("alertList");
             alertList.innerHTML = `<li
