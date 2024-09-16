@@ -1,16 +1,13 @@
-#include <DHT.h>
+#include <Wire.h>
 #include <WiFi.h>
 #include <ThingSpeak.h>
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
+#include <math.h>
 
 // TODO: replace placeholders with actual values
 #define WiFi_SSID "SSID"
 #define WiFi_PASS "PASSWORD"
-
-#define SMOKE_SEN_DIGITAL_PIN 2
-#define SMOKE_SEN_ANALOG_PIN 35
-
-#define DHTPIN 23
-#define DHTTYPE DHT11
 
 #define BUZZER_PIN 22
 
@@ -18,7 +15,7 @@
 #define LED_G 19
 #define LED_B 18
 
-DHT dht(DHTPIN, DHTTYPE);
+Adafruit_MPU6050 mpu;
 
 WiFiClient client;
 
@@ -92,11 +89,6 @@ void error()
 
 void initializePins()
 {
-    pinMode(SMOKE_SEN_DIGITAL_PIN, INPUT);
-    pinMode(SMOKE_SEN_ANALOG_PIN, INPUT);
-
-    pinMode(DHTPIN, INPUT);
-
     pinMode(BUZZER_PIN, OUTPUT);
 
     pinMode(LED_R, OUTPUT);
@@ -144,7 +136,27 @@ void setup()
     initializePins();
 
     Serial.begin(115200);
-    dht.begin();
+    Wire.begin();
+
+    // Try to initialize MPU6050
+    if (!mpu.begin(0x69))
+    {
+        Serial.println("Failed to find MPU6050 chip");
+        while (1)
+        {
+            delay(10);
+        }
+    }
+    Serial.println("MPU6050 Found!");
+
+    // Set up the accelerometer range
+    mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+    // Set up the gyroscope range
+    mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+    // Set filter bandwidth
+    mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+
+    delay(100);
 
     connectToNetwork();
 
@@ -153,53 +165,57 @@ void setup()
     delay(2000);
 }
 
+int counter = 0;
+
 void loop()
 {
-    connectToNetwork();
+    sensors_event_t a, g, temp;
+    mpu.getEvent(&a, &g, &temp);
 
-    float h = dht.readHumidity();
-    float t = dht.readTemperature();
-    float f = dht.readTemperature(true);
+    Serial.print("(");
+    Serial.print(counter);
+    Serial.println(")");
 
-    if (isnan(h) || isnan(t) || isnan(f))
+    Serial.print("\tAcceleration X: ");
+    Serial.print(a.acceleration.x);
+    Serial.print(", Y: ");
+    Serial.print(a.acceleration.y);
+    Serial.print(", Z: ");
+    Serial.print(a.acceleration.z);
+    Serial.println(" m/s^2");
+
+    float val = pow(pow(a.acceleration.x, 2) + pow(a.acceleration.y, 2) + pow(a.acceleration.z, 2), 0.5);
+    Serial.print("\tSpecial Value ;) : ");
+    Serial.print(val);
+    Serial.println("m/s^2");
+
+    Serial.print("\tRotation X: ");
+    Serial.print(g.gyro.x);
+    Serial.print(", Y: ");
+    Serial.print(g.gyro.y);
+    Serial.print(", Z: ");
+    Serial.print(g.gyro.z);
+    Serial.println(" rad/s");
+
+    Serial.print("\tTemperature: ");
+    Serial.print(temp.temperature);
+    Serial.println(" degC");
+
+    Serial.println("");
+
+    if (counter++ == 60)
     {
-        Serial.println("Failed to read from DHT sensor!");
-        error();
-    }
-    else
-    {
+        counter = 0;
+        connectToNetwork();
 
-        float hif = dht.computeHeatIndex(f, h);
-        float hic = dht.computeHeatIndex(t, h, false);
-
-        Serial.print("Humidity: ");
-        Serial.print(h);
-        Serial.print(" %\t");
-        Serial.print("Temperature: ");
-        Serial.print(t);
-        Serial.print(" *C ");
-        Serial.print(f);
-        Serial.print(" *F\t");
-        Serial.print("Heat index: ");
-        Serial.print(hic);
-        Serial.print(" *C ");
-        Serial.print(hif);
-        Serial.println(" *F");
-
-        int smokeDigital = digitalRead(SMOKE_SEN_DIGITAL_PIN);
-        int smokeAnalog = analogRead(SMOKE_SEN_ANALOG_PIN);
-
-        Serial.print("Smoke Digital: ");
-        Serial.print(smokeDigital);
-        Serial.print("\t");
-        Serial.print("Smoke Analog: ");
-        Serial.println(smokeAnalog);
-
-        ThingSpeak.setField(1, t);
-        ThingSpeak.setField(2, hic);
-        ThingSpeak.setField(3, h);
-        ThingSpeak.setField(4, smokeDigital);
-        ThingSpeak.setField(5, smokeAnalog);
+        ThingSpeak.setField(1, a.acceleration.x);
+        ThingSpeak.setField(2, a.acceleration.y);
+        ThingSpeak.setField(3, a.acceleration.z);
+        ThingSpeak.setField(4, g.gyro.x);
+        ThingSpeak.setField(5, g.gyro.y);
+        ThingSpeak.setField(6, g.gyro.z);
+        ThingSpeak.setField(7, temp.temperature);
+        ThingSpeak.setField(8, val);
 
         int code = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
 
@@ -215,5 +231,5 @@ void loop()
         }
     }
 
-    delay(30000);
+    delay(500);
 }
