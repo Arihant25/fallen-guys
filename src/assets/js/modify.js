@@ -1,31 +1,28 @@
+// TODO: Update the API key and fields
+
 let submitBtn = document.getElementById("submit");
 
 submitBtn.addEventListener("click", function (event) {
   event.preventDefault();
-  var temperature = Number(document.getElementById("temperature").value);
-  var humidity = Number(document.getElementById("humidity").value);
-  var heatIndex = Number(document.getElementById("heatIndex").value);
-  var smoke = Number(document.getElementById("smoke").value);
-  var flame = Number(document.getElementById("flame").value);
+  var accelerometer = Number(document.getElementById("accelerometer").value);
+  var gyroscope = Number(document.getElementById("gyroscope").value);
+  var gps = Number(document.getElementById("gps").value);
+  var battery = Number(document.getElementById("battery").value);
   var password = document.getElementById("password").value;
   var accepted = document.getElementById("accepted").checked;
 
-  if (isNaN(temperature) || temperature === 0)
-    alert("Invalid temperature threshold (must be a positive number)");
-  else if (isNaN(humidity) || humidity === 0)
-    alert("Invalid humidity threshold (must be a positive number)");
-  else if (isNaN(heatIndex) || heatIndex === 0)
+  if (isNaN(accelerometer) || accelerometer === 0)
+    alert("Invalid accelerometer threshold (must be a positive number)");
+  else if (isNaN(gyroscope) || gyroscope === 0)
+    alert("Invalid gyroscope threshold (must be a positive number)");
+  else if (isNaN(gps) || gps === 0)
     alert("Invalid heat index threshold");
-  else if (isNaN(smoke) || smoke === 0)
-    alert("Invalid smoke threshold (must be a positive number)");
-  else if (isNaN(flame) || flame === 0)
-    alert("Invalid flame threshold (must be a positive number)");
+  else if (isNaN(battery) || battery === 0)
+    alert("Invalid battery threshold (must be a positive number)");
   else if (!accepted) alert("Please accept the terms and conditions");
   else {
-    //   start an async GET request to push this data to thingspeak server
-    flame = 4095 - flame * 4095 / 100;
     fetch(
-      `https://api.thingspeak.com/update?api_key=DMUU4N34U556W1W1&field1=${temperature}&field2=${heatIndex}&field3=${humidity}&field4=${smoke}&field5=${password}&field6=${flame}`
+      `https://api.thingspeak.com/update?api_key=DMUU4N34U556W1W1&field1=${accelerometer}&field2=${gps}&field3=${gyroscope}&field4=${battery}&field5=${password}`
     )
       .then((response) => response.json())
       .then((data) => {

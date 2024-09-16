@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fallen Guys</title>
+  <title>Fallen Guys  </title>
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
   <link rel="stylesheet" href="../assets/css/our.css" />
@@ -22,7 +22,7 @@
             <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
               <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
                 <img src="../assets/images/logos/favicon.png" alt="" width="35" height="35" class="rounded-circle" />
-                <p class="logoName" style="font-size: 17px;">Fallen Guys</p>
+                <p class="logoName">Fallen Guys </p>
               </ul>
             </div>
           </nav>
@@ -31,10 +31,10 @@
             <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
               <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
                 <a href="modify.html" class="btn btn-primary" style="
-                        background-color: #fc3e00;
-                        border-color: #a82a00;
-                      ">
-                  Modify Settings
+                      background-color: rgb(192, 40, 49);
+                      border-color: rgb(192, 40, 49);
+                    ">
+                  Modify Thresholds
                 </a>
               </ul>
             </div>
@@ -48,10 +48,10 @@
           <div class="col-lg-12 d-flex align-items-stretch">
             <div class="card w-100">
               <div class="card-body p-4" style="
-                      display: flex;
-                      justify-content: center;
-                      align-items: right;
-                    " id="fallAlert">
+                    display: flex;
+                    justify-content: center;
+                    align-items: right;
+                  " id="fireAlert">
                 <img src="../assets/images/loading.gif" alt="loading" id="alertLogo" width="69px" height="69px" />
                 <p id="alertText">Loading...</p>
               </div>
@@ -67,134 +67,362 @@
               <div class="col-lg-12">
                 <div class="card">
                   <div class="card-body">
-                    <div class="row align-items-start">
+                    <div class="row alig n-items-start">
                       <div class="col-8">
                         <h5 class="card-title mb-9 fw-semibold">
-                          Accelerometer
+                          X Acceleration
                         </h5>
-                        <h4 class="fw-semibold mb-3" id="curAccelerometer">
-                          X: 0.00, Y: 0.00, Z: 0.00
+                        <h4 class="fw-semibold mb-3" id="Xacc">
+                          0
                         </h4>
                       </div>
                       <div class="col-4">
                         <div class="d-flex justify-content-end">
                           <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
                             style="
-                                  width: 47px;
-                                  height: 47px;
-                                  border-radius: 50%;
-                                  background-color: #e58d06;
-                                ">
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #ef8d06;
+                              ">
                             <img width="32" height="32"
                               src="https://img.icons8.com/external-outline-black-m-oki-orlando/32/external-acceleration-physics-basic-outline-outline-black-m-oki-orlando.png"
-                              alt="external-acceleration-physics-basic-outline-outline-black-m-oki-orlando" />
+                              alt="acceleration icon" />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div id="accelerometer"></div>
+                  <div id="Xacc"></div>
                 </div>
               </div>
-
-              <!-- Gyroscope -->
               <div class="col-lg-12">
                 <div class="card">
                   <div class="card-body">
-                    <div class="row align-items-start">
+                    <div class="row alig n-items-start">
                       <div class="col-8">
                         <h5 class="card-title mb-9 fw-semibold">
-                          Gyroscope
+                          Y Acceleration
                         </h5>
-                        <h4 class="fw-semibold mb-3" id="curGyroscope">
-                          X: 0.00, Y: 0.00, Z: 0.00
+                        <h4 class="fw-semibold mb-3" id="Yacc">
+                          0
                         </h4>
                       </div>
                       <div class="col-4">
                         <div class="d-flex justify-content-end">
                           <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
                             style="
-                                  width: 47px;
-                                  height: 47px;
-                                  border-radius: 50%;
-                                  background-color: #eb9b94;
-                                ">
-                            <img width="32" height="32" src="https://img.icons8.com/ios-filled/50/FFFFFF/gyroscope.png"
-                              alt="gyroscope" />
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #ef8d06;
+                              ">
+                            <img width="32" height="32"
+                              src="https://img.icons8.com/external-outline-black-m-oki-orlando/32/external-acceleration-physics-basic-outline-outline-black-m-oki-orlando.png"
+                              alt="acceleration icon" />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div id="gyroscope"></div>
+                  <div id="Yacc"></div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row alig n-items-start">
+                      <div class="col-8">
+                        <h5 class="card-title mb-9 fw-semibold">
+                          Z Acceleration
+                        </h5>
+                        <h4 class="fw-semibold mb-3" id="Zacc">
+                          0
+                        </h4>
+                      </div>
+                      <div class="col-4">
+                        <div class="d-flex justify-content-end">
+                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                            style="
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #ef8d06;
+                              ">
+                            <img width="32" height="32"
+                              src="https://img.icons8.com/external-outline-black-m-oki-orlando/32/external-acceleration-physics-basic-outline-outline-black-m-oki-orlando.png"
+                              alt="acceleration icon" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="Zacc"></div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row alig n-items-start">
+                      <div class="col-8">
+                        <h5 class="card-title mb-9 fw-semibold">
+                          Net Acceleration
+                        </h5>
+                        <h4 class="fw-semibold mb-3" id="Nacc">
+                          0
+                        </h4>
+                      </div>
+                      <div class="col-4">
+                        <div class="d-flex justify-content-end">
+                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                            style="
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #ef8d06;
+                              ">
+                            <img width="32" height="32"
+                              src="https://img.icons8.com/external-outline-black-m-oki-orlando/32/external-acceleration-physics-basic-outline-outline-black-m-oki-orlando.png"
+                              alt="acceleration icon" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="Nacc"></div>
+                </div>
+              </div>
+              <!-- Temperature -->
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row alig n-items-start">
+                      <div class="col-8">
+                        <h5 class="card-title mb-9 fw-semibold">
+                          Temperature
+                        </h5>
+                        <h4 class="fw-semibold mb-3" id="temp">
+                          0
+                        </h4>
+                      </div>
+                      <div class="col-4">
+                        <div class="d-flex justify-content-end">
+                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                            style="
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #eb9b94;
+                              ">
+                            <img width="32" height="32"
+                              src="https://img.icons8.com/pastel-glyph/64/FFFFFF/thermometer--v5.png"
+                              alt="temperature icon" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="temp"></div>
                 </div>
               </div>
             </div>
           </div>
 
-
           <div class="col-lg-6">
             <div class="row">
-              <!-- GPS Location -->
+              <!-- Gyroscope -->
               <div class="col-lg-12">
                 <div class="card">
-                  <div class="card-body" id="gpsSection" style="cursor: pointer;">
-                    <div class="row align-items-start">
+                  <div class="card-body">
+                    <div class="row alig n-items-start">
                       <div class="col-8">
-                        <h5 class="card-title mb-9 fw-semibold">GPS Location</h5>
-                        <h4 class="fw-semibold mb-3" id="curGPS">
-                          Lat: 17.44750, Long: 78.34862
+                        <h5 class="card-title mb-9 fw-semibold">
+                          X Angular Velocity
+                        </h5>
+                        <h4 class="fw-semibold mb-3" id="XangVel">
+                          0
                         </h4>
                       </div>
                       <div class="col-4">
                         <div class="d-flex justify-content-end">
                           <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
                             style="
-                        width: 47px;
-                        height: 47px;
-                        border-radius: 50%;
-                        background-color: #5073b3;
-                      ">
-                            <img width="32" height="32" src="https://img.icons8.com/ios-filled/50/FFFFFF/marker.png"
-                              alt="gps" />
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #5073b3;
+                              ">
+                            <img width="32" height="32" src="https://img.icons8.com/ios-filled/50/FFFFFF/gyroscope.png"
+                              alt="angular velocity logo" />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div id="gps"></div>
+                  <div id="XangVel"></div>
                 </div>
               </div>
-
-
-              <!-- Battery Level -->
               <div class="col-lg-12">
                 <div class="card">
                   <div class="card-body">
-                    <div class="row align-items-start">
+                    <div class="row alig n-items-start">
                       <div class="col-8">
-                        <h5 class="card-title mb-9 fw-semibold">Battery Level</h5>
-                        <h4 class="fw-semibold mb-3" id="curBattery">
-                          42%
+                        <h5 class="card-title mb-9 fw-semibold">
+                          Y Angular Velocity
+                        </h5>
+                        <h4 class="fw-semibold mb-3" id="YangVel">
+                          0
                         </h4>
                       </div>
                       <div class="col-4">
                         <div class="d-flex justify-content-end">
                           <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
                             style="
-                                  width: 47px;
-                                  height: 47px;
-                                  border-radius: 50%;
-                                  background-color: #29e7cd;
-                                ">
-                            <img width="32" height="32"
-                              src="https://img.icons8.com/ios-filled/50/FFFFFF/full-battery.png" alt="battery" />
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #5073b3;
+                              ">
+                            <img width="32" height="32" src="https://img.icons8.com/ios-filled/50/FFFFFF/gyroscope.png"
+                              alt="angular velocity logo" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="YangVel"></div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row alig n-items-start">
+                      <div class="col-8">
+                        <h5 class="card-title mb-9 fw-semibold">
+                          Z Angular Velocity
+                        </h5>
+                        <h4 class="fw-semibold mb-3" id="ZangVel">
+                          0
+                        </h4>
+                      </div>
+                      <div class="col-4">
+                        <div class="d-flex justify-content-end">
+                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                            style="
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #5073b3;
+                              ">
+                            <img width="32" height="32" src="https://img.icons8.com/ios-filled/50/FFFFFF/gyroscope.png"
+                              alt="angular velocity logo" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="ZangVel"></div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row alig n-items-start">
+                      <div class="col-8">
+                        <h5 class="card-title mb-9 fw-semibold">
+                          Net Angular Velocity
+                        </h5>
+                        <h4 class="fw-semibold mb-3" id="NangVel">
+                          0
+                        </h4>
+                      </div>
+                      <div class="col-4">
+                        <div class="d-flex justify-content-end">
+                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                            style="
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #5073b3;
+                              ">
+                            <img width="32" height="32" src="https://img.icons8.com/ios-filled/50/FFFFFF/gyroscope.png"
+                              alt="angular velocity logo" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="NangVel"></div>
+                </div>
+              </div>
+
+              <!-- Battery Level -->
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row alig n-items-start">
+                      <div class="col-8">
+                        <h5 class="card-title mb-9 fw-semibold">
+                          Battery
+                        </h5>
+                        <h4 class="fw-semibold mb-3" id="battery">
+                          0
+                        </h4>
+                      </div>
+                      <div class="col-4">
+                        <div class="d-flex justify-content-end">
+                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                            style="
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #29e7cd;
+                              ">
+                            <img width="32" height="32" src="https://img.icons8.com/ios-filled/50/FFFFFF/full-battery.png"
+                              alt="battery logo" />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div id="battery"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3"></div>
+          <div class="col-lg-6">
+            <div class="row">
+              <!-- GPS -->
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row alig n-items-start">
+                      <div class="col-8">
+                        <h5 class="card-title mb-9 fw-semibold"> GPS Location </h5>
+                        <h4 class="fw-semibold mb-3" id="gps">
+                          0
+                        </h4>
+                      </div>
+                      <div class="col-4">
+                        <div class="d-flex justify-content-end">
+                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                            style="
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #fc3e00;
+                              ">
+                            <img width="30" height="30"
+                              src="https://img.icons8.com/ios-filled/50/FFFFFF/marker.png"
+                              alt="fire-element--v1" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="gps"></div>
                 </div>
               </div>
             </div>
@@ -206,20 +434,20 @@
           <div class="col-lg-12 d-flex align-items-stretch">
             <div class="card w-100">
               <div class="card-body p-4">
-                <h5 class="card-title fw-semibold">Past Alerts</h5>
                 <div class="mb-4">
+                  <h5 class="card-title fw-semibold">Past Alerts</h5>
                 </div>
                 <ul class="timeline-widget mb-0 position-relative mb-n5" id="alertList">
                   <li class="timeline-item d-flex position-relative overflow-hidden" id="lastAlert">
                     <div class="timeline-time text-dark flex-shrink-0 text-end" id="startup">
-                      <div>2024-09-16</div>
-                      <div style="padding-bottom: 5vh">12:00:00 UTC</div>
+                      <div>16-09-2024</div>
+                      <div style="padding-bottom: 5vh">04:20:00 IST</div>
                     </div>
                     <div class="timeline-badge-wrap d-flex flex-column align-items-center">
                       <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
                     </div>
                     <div class="timeline-desc fs-3 text-dark mt-n1">
-                      Device activated
+                      Node started
                     </div>
                   </li>
                 </ul>
@@ -249,18 +477,6 @@
   <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
   <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
   <script src="../assets/js/dashboard.js"></script>
-  <script>
-    document.getElementById('gpsSection').addEventListener('click', function () {
-      var gpsText = document.getElementById('curGPS').innerText;
-      var coords = gpsText.match(/Lat: ([-\d.]+), Long: ([-\d.]+)/);
-      if (coords) {
-        var lat = coords[1];
-        var long = coords[2];
-        var url = `https://www.google.com/maps?q=${lat},${long}`;
-        window.open(url, '_blank');
-      }
-    });
-  </script>
 </body>
 
 </html>
