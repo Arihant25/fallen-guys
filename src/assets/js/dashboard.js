@@ -1,7 +1,7 @@
 function FallenGuys() {
   $(function () {
     fetch(
-      "https://api.thingspeak.com/channels/2658268/feeds.json?api_key=FRIN88PUMDP9QGS4&results=2"
+      "https://api.thingspeak.com/channels/2658268/feeds.json?api_key=FRIN88PUMDP9QGS4"
     )
       .then((response) => response.json())
       .then((init_data) => {
@@ -11,7 +11,7 @@ function FallenGuys() {
           .then((response) => response.json())
           .then((data) => {
             var fetched_data = data.feeds;
-            console.log(fetched_data);  
+            console.log(fetched_data);
 
             // =====================================
             // Acceleration
@@ -63,7 +63,7 @@ function FallenGuys() {
             new ApexCharts(document.querySelector("#Xacc"), Xacc).render();
             document.querySelector("#Xacc").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field1).toFixed(1) + " m/s^2";
-            
+
             var Yacc = {
               chart: {
                 id: "sparkline2",
@@ -111,7 +111,7 @@ function FallenGuys() {
             new ApexCharts(document.querySelector("#Yacc"), Yacc).render();
             document.querySelector("#Yacc").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field2).toFixed(1) + " m/s^2";
-            
+
             var Zacc = {
               chart: {
                 id: "sparkline3",
@@ -159,55 +159,55 @@ function FallenGuys() {
             new ApexCharts(document.querySelector("#Zacc"), Zacc).render();
             document.querySelector("#Zacc").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field3).toFixed(1) + " m/s^2";
-            
-              var Nacc = {
-                chart: {
-                  id: "sparkline2",
-                  type: "area",
-                  height: 60,
-                  sparkline: {
-                    enabled: true,
-                  },
-                  group: "sparklines",
-                  fontFamily: "Plus Jakarta Sans', sans-serif",
-                  foreColor: "#adb0bb",
+
+            var Nacc = {
+              chart: {
+                id: "sparkline2",
+                type: "area",
+                height: 60,
+                sparkline: {
+                  enabled: true,
                 },
-                series: [
-                  {
-                    name: "Nacc",
-                    color: "#FFA500",
-                    data: fetched_data
-                      .slice(-100)
-                      .map((item) => parseFloat(item.field8).toFixed(1)),
-                  },
-                ],
-                stroke: {
-                  curve: "smooth",
-                  width: 2,
+                group: "sparklines",
+                fontFamily: "Plus Jakarta Sans', sans-serif",
+                foreColor: "#adb0bb",
+              },
+              series: [
+                {
+                  name: "Nacc",
+                  color: "#FFA500",
+                  data: fetched_data
+                    .slice(-100)
+                    .map((item) => parseFloat(item.field8).toFixed(1)),
                 },
-                fill: {
-                  colors: ["#f3feff"],
-                  type: "solid",
-                  opacity: 0.05,
+              ],
+              stroke: {
+                curve: "smooth",
+                width: 2,
+              },
+              fill: {
+                colors: ["#f3feff"],
+                type: "solid",
+                opacity: 0.05,
+              },
+              markers: {
+                size: 0,
+              },
+              tooltip: {
+                theme: "dark",
+                fixed: {
+                  enabled: true,
+                  position: "right",
                 },
-                markers: {
-                  size: 0,
+                x: {
+                  show: false,
                 },
-                tooltip: {
-                  theme: "dark",
-                  fixed: {
-                    enabled: true,
-                    position: "right",
-                  },
-                  x: {
-                    show: false,
-                  },
-                },
-              };
-              new ApexCharts(document.querySelector("#Nacc"), Nacc).render();
-              document.querySelector("#Nacc").textContent =
-                parseFloat(fetched_data[fetched_data.length - 1].field8).toFixed(1) + " m/s^2";  
-            
+              },
+            };
+            new ApexCharts(document.querySelector("#Nacc"), Nacc).render();
+            document.querySelector("#Nacc").textContent =
+              parseFloat(fetched_data[fetched_data.length - 1].field8).toFixed(1) + " m/s^2";
+
             var XangVel = {
               chart: {
                 id: "sparkline4",
@@ -255,7 +255,7 @@ function FallenGuys() {
             new ApexCharts(document.querySelector("#XangVel"), XangVel).render();
             document.querySelector("#XangVel").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field4).toFixed(1) + " rad/s";
-            
+
             var YangVel = {
               chart: {
                 id: "sparkline5",
@@ -303,7 +303,7 @@ function FallenGuys() {
             new ApexCharts(document.querySelector("#YangVel"), YangVel).render();
             document.querySelector("#YangVel").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field5).toFixed(1) + " rad/s";
-            
+
             var ZangVel = {
               chart: {
                 id: "sparkline6",
@@ -351,7 +351,7 @@ function FallenGuys() {
             new ApexCharts(document.querySelector("#ZangVel"), ZangVel).render();
             document.querySelector("#ZangVel").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field6).toFixed(1) + " rad/s";
-            
+
             var temp = {
               chart: {
                 id: "sparkline7",
@@ -399,7 +399,12 @@ function FallenGuys() {
             new ApexCharts(document.querySelector("#temp"), temp).render();
             document.querySelector("#temp").textContent =
               parseFloat(fetched_data[fetched_data.length - 1].field7).toFixed(1) + " °C";
-            
+
+
+            new ApexCharts(document.querySelector("#maxnetacc"), temp).render();
+            document.querySelector("#maxnetacc").textContent =
+              parseFloat(fetched_data[fetched_data.length - 1].field8).toFixed(1) + " m/s²";
+
             // =====================================
             // Alerts
             // =====================================
@@ -427,12 +432,10 @@ function FallenGuys() {
                       </div>
                     </li>`;
 
-            document.getElementById("startup").innerHTML = `<div>${
-              fetched_data[0].created_at.split("T")[0]
-            }</div>
-        <div style="padding-bottom: 5vh;">${
-          fetched_data[0].created_at.split("T")[1].replace("Z", "") + " UTC"
-        }</div>`;
+            document.getElementById("startup").innerHTML = `<div>${fetched_data[0].created_at.split("T")[0]
+              }</div>
+        <div style="padding-bottom: 5vh;">${fetched_data[0].created_at.split("T")[1].replace("Z", "") + " UTC"
+              }</div>`;
 
             var lastAlert = document.getElementById("lastAlert");
             for (var i = fetched_data.length - 1; i >= 0; i--) {
