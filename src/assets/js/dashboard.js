@@ -11,7 +11,6 @@ function FallenGuys() {
           .then((response) => response.json())
           .then((data) => {
             var fetched_data = data.feeds;
-            console.log(fetched_data);
 
             // =====================================
             // Acceleration
@@ -62,7 +61,9 @@ function FallenGuys() {
             };
             new ApexCharts(document.querySelector("#XaccPlot"), Xacc).render();
             document.querySelector("#Xacc").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field1).toFixed(1) + " m/s^2";
+              parseFloat(fetched_data[fetched_data.length - 1].field1).toFixed(
+                1
+              ) + " m/s^2";
 
             var Yacc = {
               chart: {
@@ -110,7 +111,9 @@ function FallenGuys() {
             };
             new ApexCharts(document.querySelector("#YaccPlot"), Yacc).render();
             document.querySelector("#Yacc").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field2).toFixed(1) + " m/s^2";
+              parseFloat(fetched_data[fetched_data.length - 1].field2).toFixed(
+                1
+              ) + " m/s^2";
 
             var Zacc = {
               chart: {
@@ -158,7 +161,9 @@ function FallenGuys() {
             };
             new ApexCharts(document.querySelector("#ZaccPlot"), Zacc).render();
             document.querySelector("#Zacc").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field3).toFixed(1) + " m/s^2";
+              parseFloat(fetched_data[fetched_data.length - 1].field3).toFixed(
+                1
+              ) + " m/s^2";
 
             var Nacc = {
               chart: {
@@ -206,7 +211,9 @@ function FallenGuys() {
             };
             new ApexCharts(document.querySelector("#NaccPlot"), Nacc).render();
             document.querySelector("#Nacc").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field8).toFixed(1) + " m/s^2";
+              parseFloat(fetched_data[fetched_data.length - 1].field8).toFixed(
+                1
+              ) + " m/s^2";
 
             var XangVel = {
               chart: {
@@ -252,9 +259,14 @@ function FallenGuys() {
                 },
               },
             };
-            new ApexCharts(document.querySelector("#XangVelPlot"), XangVel).render();
+            new ApexCharts(
+              document.querySelector("#XangVelPlot"),
+              XangVel
+            ).render();
             document.querySelector("#XangVel").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field4).toFixed(1) + " rad/s";
+              parseFloat(fetched_data[fetched_data.length - 1].field4).toFixed(
+                1
+              ) + " rad/s";
 
             var YangVel = {
               chart: {
@@ -300,9 +312,14 @@ function FallenGuys() {
                 },
               },
             };
-            new ApexCharts(document.querySelector("#YangVelPlot"), YangVel).render();
+            new ApexCharts(
+              document.querySelector("#YangVelPlot"),
+              YangVel
+            ).render();
             document.querySelector("#YangVel").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field5).toFixed(1) + " rad/s";
+              parseFloat(fetched_data[fetched_data.length - 1].field5).toFixed(
+                1
+              ) + " rad/s";
 
             var ZangVel = {
               chart: {
@@ -348,61 +365,73 @@ function FallenGuys() {
                 },
               },
             };
-            new ApexCharts(document.querySelector("#ZangVelPlot"), ZangVel).render();
+            new ApexCharts(
+              document.querySelector("#ZangVelPlot"),
+              ZangVel
+            ).render();
             document.querySelector("#ZangVel").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field6).toFixed(1) + " rad/s";
-            
-              var NangVel = {
-                chart: {
-                  id: "sparkline6",
-                  type: "area",
-                  height: 60,
-                  sparkline: {
-                    enabled: true,
-                  },
-                  group: "sparklines",
-                  fontFamily: "Plus Jakarta Sans', sans-serif",
-                  foreColor: "#adb0bb",
+              parseFloat(fetched_data[fetched_data.length - 1].field6).toFixed(
+                1
+              ) + " rad/s";
+
+            var NangVel = {
+              chart: {
+                id: "sparkline6",
+                type: "area",
+                height: 60,
+                sparkline: {
+                  enabled: true,
                 },
-                series: [
-                  {
-                    name: "Net Angular Velocity",
-                    color: "#5073b3",
-                    data: fetched_data
-                      .slice(-100)
-                      .map((item) => Math.sqrt(
-                        parseFloat(item.field4)**2 + 
-                        parseFloat(item.field5)**2 + 
-                        parseFloat(item.field6)**2
-                      ).toFixed(1)),
-                  },
-                ],
-                stroke: {
-                  curve: "smooth",
-                  width: 2,
+                group: "sparklines",
+                fontFamily: "Plus Jakarta Sans', sans-serif",
+                foreColor: "#adb0bb",
+              },
+              series: [
+                {
+                  name: "Net Angular Velocity",
+                  color: "#5073b3",
+                  data: fetched_data
+                    .slice(-100)
+                    .map((item) =>
+                      Math.sqrt(
+                        parseFloat(item.field4) ** 2 +
+                          parseFloat(item.field5) ** 2 +
+                          parseFloat(item.field6) ** 2
+                      ).toFixed(1)
+                    ),
                 },
-                fill: {
-                  colors: ["#f3feff"],
-                  type: "solid",
-                  opacity: 0.05,
+              ],
+              stroke: {
+                curve: "smooth",
+                width: 2,
+              },
+              fill: {
+                colors: ["#f3feff"],
+                type: "solid",
+                opacity: 0.05,
+              },
+              markers: {
+                size: 0,
+              },
+              tooltip: {
+                theme: "dark",
+                fixed: {
+                  enabled: true,
+                  position: "right",
                 },
-                markers: {
-                  size: 0,
+                x: {
+                  show: false,
                 },
-                tooltip: {
-                  theme: "dark",
-                  fixed: {
-                    enabled: true,
-                    position: "right",
-                  },
-                  x: {
-                    show: false,
-                  },
-                },
-              };
-            new ApexCharts(document.querySelector("#NangVelPlot"), NangVel).render();
+              },
+            };
+            new ApexCharts(
+              document.querySelector("#NangVelPlot"),
+              NangVel
+            ).render();
             document.querySelector("#NangVel").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field6).toFixed(1) + " rad/s";
+              parseFloat(fetched_data[fetched_data.length - 1].field6).toFixed(
+                1
+              ) + " rad/s";
 
             var temp = {
               chart: {
@@ -450,55 +479,62 @@ function FallenGuys() {
             };
             new ApexCharts(document.querySelector("#tempPlot"), temp).render();
             document.querySelector("#temp").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field7).toFixed(1) + " °C";
+              parseFloat(fetched_data[fetched_data.length - 1].field7).toFixed(
+                1
+              ) + " °C";
 
-              var maxNetAcc = {
-                chart: {
-                  id: "sparkline7",
-                  type: "area",
-                  height: 60,
-                  sparkline: {
-                    enabled: true,
-                  },
-                  group: "sparklines",
-                  fontFamily: "Plus Jakarta Sans', sans-serif",
-                  foreColor: "#adb0bb",
+            var maxNetAcc = {
+              chart: {
+                id: "sparkline7",
+                type: "area",
+                height: 60,
+                sparkline: {
+                  enabled: true,
                 },
-                series: [
-                  {
-                    name: "Max Net Acceleration",
-                    color: "#29e7cd",
-                    data: fetched_data
-                      .slice(-100)
-                      .map((item) => parseFloat(item.field8).toFixed(1)),
-                  },
-                ],
-                stroke: {
-                  curve: "smooth",
-                  width: 2,
+                group: "sparklines",
+                fontFamily: "Plus Jakarta Sans', sans-serif",
+                foreColor: "#adb0bb",
+              },
+              series: [
+                {
+                  name: "Max Net Acceleration",
+                  color: "#29e7cd",
+                  data: fetched_data
+                    .slice(-100)
+                    .map((item) => parseFloat(item.field8).toFixed(1)),
                 },
-                fill: {
-                  colors: ["#f3feff"],
-                  type: "solid",
-                  opacity: 0.05,
+              ],
+              stroke: {
+                curve: "smooth",
+                width: 2,
+              },
+              fill: {
+                colors: ["#f3feff"],
+                type: "solid",
+                opacity: 0.05,
+              },
+              markers: {
+                size: 0,
+              },
+              tooltip: {
+                theme: "dark",
+                fixed: {
+                  enabled: true,
+                  position: "right",
                 },
-                markers: {
-                  size: 0,
+                x: {
+                  show: false,
                 },
-                tooltip: {
-                  theme: "dark",
-                  fixed: {
-                    enabled: true,
-                    position: "right",
-                  },
-                  x: {
-                    show: false,
-                  },
-                },
-              };
-            new ApexCharts(document.querySelector("#maxnetaccPlot"), maxNetAcc).render();
+              },
+            };
+            new ApexCharts(
+              document.querySelector("#maxnetaccPlot"),
+              maxNetAcc
+            ).render();
             document.querySelector("#maxnetacc").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field8).toFixed(1) + " m/s²";
+              parseFloat(fetched_data[fetched_data.length - 1].field8).toFixed(
+                1
+              ) + " m/s²";
 
             // =====================================
             // Past Alerts
@@ -527,14 +563,16 @@ function FallenGuys() {
                       </div>
                     </li>`;
 
-            document.getElementById("startup").innerHTML = `<div>${fetched_data[0].created_at.split("T")[0]
-              }</div>
-        <div style="padding-bottom: 5vh;">${fetched_data[0].created_at.split("T")[1].replace("Z", "") + " UTC"
-              }</div>`;
+            document.getElementById("startup").innerHTML = `<div>${
+              fetched_data[0].created_at.split("T")[0]
+            }</div>
+        <div style="padding-bottom: 5vh;">${
+          fetched_data[0].created_at.split("T")[1].replace("Z", "") + " UTC"
+        }</div>`;
 
             var lastAlert = document.getElementById("lastAlert");
             for (var i = fetched_data.length - 1; i >= 0; i--) {
-              if (fetched_data[i].field6 === "1") {
+              if (parseFloat(fetched_data[i].field8) >= 15.0) {
                 var li = document.createElement("li");
                 li.className =
                   "timeline-item d-flex position-relative overflow-hidden";
@@ -579,7 +617,7 @@ function FallenGuys() {
                 var div3 = document.createElement("div");
                 div3.className =
                   "timeline-desc fs-3 text-dark mt-n1 fw-semibold";
-                div3.textContent = "Fire Detected! ";
+                div3.textContent = "Fall Detected! ";
 
                 var temp_details = document.createElement("span");
                 temp_details.className = "text-primary d-block fw-normal";
@@ -608,7 +646,7 @@ function FallenGuys() {
                 var flame_details = document.createElement("span");
                 flame_details.className = "text-primary d-block fw-normal";
                 flame_details.textContent = `Flame: ${parseFloat(
-                  100 * (4095 - fetched_data[i].field7) / 4095
+                  (100 * (4095 - fetched_data[i].field7)) / 4095
                 ).toFixed(1)} %`;
                 div3.appendChild(flame_details);
 
@@ -620,7 +658,7 @@ function FallenGuys() {
               }
             }
 
-            // Check for fire, to raise alert on the webPage
+            // Check for fall, to raise alert on the webPage
             if (fetched_data[fetched_data.length - 1]["field6"] === "1") {
               document.getElementById("fireAlert").style.backgroundColor =
                 "rgb(168, 34, 50)";
@@ -653,4 +691,4 @@ function FallenGuys() {
 }
 
 FallenGuys();
-setInterval(FallenGuys, 30000);
+setInterval(FallenGuys, 15000);
