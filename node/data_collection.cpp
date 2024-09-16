@@ -215,7 +215,8 @@ void loop()
         ThingSpeak.setField(5, g.gyro.y);
         ThingSpeak.setField(6, g.gyro.z);
         ThingSpeak.setField(7, temp.temperature);
-        ThingSpeak.setField(8, val);
+        // ThingSpeak.setField(8, val);
+        ThingSpeak.setField(8, 42);
 
         int code = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
 
