@@ -10,6 +10,9 @@
 #define WiFi_PASS "PASSWORD"
 
 #define LED_BUILTIN 2
+#define BUZZER_PIN 27        // Piezo buzzer connected to pin 27
+#define BUTTON_PIN_INPUT 32  // Button input pin
+#define BUTTON_PIN_OUTPUT 33 // Button output pin (for constant voltage)
 
 Adafruit_MPU6050 mpu;
 
@@ -19,10 +22,16 @@ WiFiClient client;
 unsigned long myChannelNumber = 123456789;
 const char *myWriteAPIKey = "WRITE_API_KEY";
 
+bool alarmActive = false;
+
 void setup()
 {
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
+    pinMode(BUZZER_PIN, OUTPUT);
+    pinMode(BUTTON_PIN_INPUT, INPUT);
+    pinMode(BUTTON_PIN_OUTPUT, OUTPUT);
+    digitalWrite(BUTTON_PIN_OUTPUT, HIGH);
 
     Serial.begin(115200);
     Wire.begin();
@@ -87,6 +96,12 @@ float highest_value = 0;
 
 void loop()
 {
+    if (digitalRead(BUTTON_PIN_INPUT) == HIGH)
+    {
+        alarmActive = false;
+        digitalWrite(BUZZER_PIN, HIGH);
+    }
+
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
 
@@ -150,9 +165,20 @@ void loop()
             digitalWrite(LED_BUILTIN, LOW);
         }
 
+        if (highest_value >= 15)
+        {
+            alarmActive = true;
+            digitalWrite(BUZZER_PIN, LOW);
+        }
+
         counter = 0;
         highest_value = 0;
     }
+
+    if (alarmActive)
+        digitalWrite(BUZZER_PIN, LOW);
+    else
+        digitalWrite(BUZZER_PIN, HIGH);
 
     delay(50);
 }
