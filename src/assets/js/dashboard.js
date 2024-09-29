@@ -1,5 +1,17 @@
 function FallenGuys() {
   $(function () {
+    // Initialize the map
+    var map = L.map('map').setView([0, 0], 2);
+
+    // Add the OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Create a marker with a default position
+    var marker = L.marker([0, 0]).addTo(map);
+
     fetch(
       "https://api.thingspeak.com/channels/2658268/feeds.json?api_key=FRIN88PUMDP9QGS4"
     )
@@ -184,9 +196,9 @@ function FallenGuys() {
                   data: fetched_data
                     .slice(-100)
                     .map((item) => Math.sqrt(
-                      parseFloat(item.field1)**2 + 
-                      parseFloat(item.field2)**2 + 
-                      parseFloat(item.field3)**2
+                      parseFloat(item.field1) ** 2 +
+                      parseFloat(item.field2) ** 2 +
+                      parseFloat(item.field3) ** 2
                     ).toFixed(1)),
                 },
               ],
@@ -399,8 +411,8 @@ function FallenGuys() {
                     .map((item) =>
                       Math.sqrt(
                         parseFloat(item.field4) ** 2 +
-                          parseFloat(item.field5) ** 2 +
-                          parseFloat(item.field6) ** 2
+                        parseFloat(item.field5) ** 2 +
+                        parseFloat(item.field6) ** 2
                       ).toFixed(1)
                     ),
                 },
@@ -540,6 +552,21 @@ function FallenGuys() {
                 1
               ) + " m/s²";
 
+
+            // Update GPS coordinates and map
+            var lastEntry = fetched_data[fetched_data.length - 1];
+            var lat = parseFloat(lastEntry.field9);
+            var lon = parseFloat(lastEntry.field10);
+
+            if (!isNaN(lat) && !isNaN(lon)) {
+              document.querySelector("#gps").textContent = lat.toFixed(6) + ', ' + lon.toFixed(6);
+              marker.setLatLng([lat, lon]);
+              map.setView([lat, lon], 13);
+            } else {
+              document.querySelector("#gps").textContent = "No GPS data available";
+            }
+
+
             // =====================================
             // Past Alerts
             // =====================================
@@ -567,12 +594,10 @@ function FallenGuys() {
                       </div>
                     </li>`;
 
-            document.getElementById("startup").innerHTML = `<div>${
-              fetched_data[0].created_at.split("T")[0]
-            }</div>
-        <div style="padding-bottom: 5vh;">${
-          fetched_data[0].created_at.split("T")[1].replace("Z", "") + " UTC"
-        }</div>`;
+            document.getElementById("startup").innerHTML = `<div>${fetched_data[0].created_at.split("T")[0]
+              }</div>
+        <div style="padding-bottom: 5vh;">${fetched_data[0].created_at.split("T")[1].replace("Z", "") + " UTC"
+              }</div>`;
 
             var lastAlert = document.getElementById("lastAlert");
             for (var i = fetched_data.length - 1; i >= 0; i--) {
@@ -632,9 +657,9 @@ function FallenGuys() {
                 var fallAngVel = document.createElement("span");
                 fallAngVel.className = "text-primary d-block fw-normal";
                 fallAngVel.textContent = `Angular Velocity: ${Math.sqrt(
-                  parseFloat(fetched_data[i].field4)**2 + 
-                  parseFloat(fetched_data[i].field5)**2 + 
-                  parseFloat(fetched_data[i].field6)**2
+                  parseFloat(fetched_data[i].field4) ** 2 +
+                  parseFloat(fetched_data[i].field5) ** 2 +
+                  parseFloat(fetched_data[i].field6) ** 2
                 ).toFixed(1)} rad/s`;
                 div3.appendChild(fallAngVel);
                 var GPSLoc = document.createElement("span");
