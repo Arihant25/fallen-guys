@@ -1,16 +1,24 @@
 function FallenGuys() {
   $(function () {
-    // Initialize the map
+        // Initialize the map
     var map = L.map('map').setView([0, 0], 2);
-
+    
     // Add the OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
-
+    
     // Create a marker with a default position
     var marker = L.marker([0, 0]).addTo(map);
+    
+    // Add click event listener to the map
+    map.on('click', function(e) {
+      var lat = e.latlng.lat;
+      var lng = e.latlng.lng;
+      var googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+      window.open(googleMapsUrl, '_blank');
+    });
 
     fetch(
       "https://api.thingspeak.com/channels/2658268/feeds.json?api_key=FRIN88PUMDP9QGS4"

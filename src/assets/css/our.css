@@ -38,3 +38,7 @@
     font-size: calc(min(3rem, 11vw));
     font-weight: 690;
 }
+
+.params {
+    padding-bottom: 17px;
+}

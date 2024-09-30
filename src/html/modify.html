@@ -1,80 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Modify Thresholds</title>
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="../assets/images/logos/favicon.png"
+    />
+    <link rel="stylesheet" href="../assets/css/styles.min.css" />
+    <link rel="stylesheet" href="../assets/css/our.css" />
+  </head>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FallGuard - Modify Settings</title>
-  <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
-  <link rel="stylesheet" href="../assets/css/styles.min.css" />
-  <link rel="stylesheet" href="../assets/css/our.css" />
-</head>
+  <body>
+    <div
+      class="page-wrapper mini-sidebar"
+      id="main-wrapper"
+      data-layout="vertical"
+      data-navbarbg="skin6"
+      data-sidebartype="full mini-sidebar"
+      data-sidebar-position="fixed"
+      data-header-position="fixed"
+    >
+      <div class="body-wrapper" style="margin-left: 0">
+        <!--  Back to Home -->
+        <header class="app-header" , style="width: 100%">
+          <div class="navie", style="width: 100%; justify-content: right; padding: 0">
+            <nav class="navbar navbar-expand-lg navbar-light">
+              <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                  <a href="index.html" class="btn btn-primary" style="background-color: #28E7CD; border-color: #28E7CD;">
+                    Go Back
+                  </a>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </header>
 
-<body>
-  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-    data-sidebar-position="fixed" data-header-position="fixed">
-    <div class="body-wrapper">
-      <div class="container-fluid">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title fw-semibold mb-4">Modify Fall Detection Settings</h5>
-            <div class="mb-3">
-              <label for="fallThreshold" class="form-label">Fall Detection Threshold</label>
-              <input type="range" class="form-range" min="1.5" max="2.5" step="0.1" id="fallThreshold">
-              <span id="fallThresholdValue">1.8 g</span>
+        <div class="container-fluid">
+          <div class="container-fluid">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title fw-bold mb-3">Modify Thresholds</h5>
+                <div class="card">
+                  <!-- User Input Area -->
+                  <div class="card-body">
+                    <form>
+                      <!-- Fall Acceleration -->
+                      <div class="mb-3 params">
+                        <label for="fallAcc" class="form-label">
+                          Fall Acceleration Threshold
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="fallAcc"
+                          aria-describedby="fallAccHelp"
+                          placeholder="15"
+                          max="50"
+                          min="5"
+                        />
+                        <div id="fallAccHelp" class="form-text">
+                          Max acceleration that won't raise any alarm
+                        </div>
+                      </div>
+
+                      <!-- Alert Delay -->
+                      <div class="mb-3 params">
+                        <label for="alert" class="form-label">
+                          Alert Delay
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="alert"
+                          aria-describedby="alertHelp"
+                          placeholder="10"
+                          max="300"
+                          min="0"
+                        />
+                        <div id="alertHelp" class="form-text">
+                          Seconds to wait before sending an alert after fall detection.
+                        </div>
+                      </div>
+
+                      <!-- Emergency Contact -->
+                      <div class="mb-3 params">
+                        <label for="emergencyContact" class="form-label">
+                          Emergency Contact
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="emergencyContact"
+                          aria-describedby="emergencyContactHelp"
+                          placeholder="112"
+                          max="9999999999"
+                          min="1000000000"
+                        />
+                        <div id="emergencyContactHelp" class="form-text">
+                          Phone number to send alerts to
+                        </div>
+                      </div>
+
+                      <!-- Password -->
+                      <div class="mb-3">
+                        <label for="password" class="form-label">
+                          Password
+                        </label>
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="password"
+                        />
+                      </div>
+
+                      <!-- Terms & Conditions -->
+                      <div class="mb-3 form-check params">
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          id="accepted"
+                        />
+                        <label class="form-check-label" for="accepted">
+                          I take full responsibility for the modifications I am about to perform. I recognise the
+                          fact that any damage caused due to these changes will be my responsibility henceforth.
+                        </label>
+                      </div>
+
+                      <!-- Submit Button -->
+                      <button type="submit" class="btn btn-primary" id="submit" style="background-color: #5073B3; border-color: #5073B3;">
+                        Submit
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="mb-3">
-              <label for="sampleRate" class="form-label">Sensor Sample Rate</label>
-              <select class="form-select" id="sampleRate">
-                <option value="10">10 Hz</option>
-                <option value="20">20 Hz</option>
-                <option value="50">50 Hz</option>
-                <option value="100">100 Hz</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="alertDelay" class="form-label">Alert Delay</label>
-              <input type="number" class="form-control" id="alertDelay" min="0" max="60" value="10">
-              <small class="form-text text-muted">Seconds to wait before sending an alert after fall detection.</small>
-            </div>
-            <div class="mb-3">
-              <label for="emergencyContact" class="form-label">Emergency Contact</label>
-              <input type="tel" class="form-control" id="emergencyContact" placeholder="Enter phone number">
-            </div>
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="autoAlert">
-              <label class="form-check-label" for="autoAlert">Enable Automatic Alerts</label>
-            </div>
-            <button type="button" class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
-            <a href="index.html" class="btn btn-secondary">Back to Dashboard</a>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
-  <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/app.min.js"></script>
-  <script>
-    // Update fall threshold value display
-    document.getElementById('fallThreshold').addEventListener('input', function () {
-      document.getElementById('fallThresholdValue').textContent = this.value + ' g';
-    });
 
-    // Save settings function (to be implemented)
-    function saveSettings() {
-      const settings = {
-        fallThreshold: document.getElementById('fallThreshold').value,
-        sampleRate: document.getElementById('sampleRate').value,
-        alertDelay: document.getElementById('alertDelay').value,
-        emergencyContact: document.getElementById('emergencyContact').value,
-        autoAlert: document.getElementById('autoAlert').checked
-      };
-      console.log('Settings saved:', settings);
-      // Here you would typically send these settings to a backend server
-      alert('Settings saved successfully!');
-    }
-  </script>
-</body>
-
+    <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/sidebarmenu.js"></script>
+    <script src="../assets/js/app.min.js"></script>
+    <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
+    <script src="../assets/js/modify.js"></script>
+  </body>
 </html>
