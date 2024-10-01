@@ -1,15 +1,11 @@
 function FallenGuys() {
   $(function () {
-        // Initialize the map
+    // Display GPS Location on Map
     var map = L.map('map').setView([0, 0], 2);
-    
-    // Add the OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
-    
-    // Create a marker with a default position
     var marker = L.marker([0, 0]).addTo(map);
     
     // Add click event listener to the map
@@ -563,8 +559,9 @@ function FallenGuys() {
 
             // Update GPS coordinates and map
             var lastEntry = fetched_data[fetched_data.length - 1];
-            var lat = parseFloat(lastEntry.field9);
-            var lon = parseFloat(lastEntry.field10);
+            // lastEntry.field7 is of form "lat lon", extract the two values from lastEntry.field7
+            var lat = parseFloat(lastEntry.field7.split(" ")[0]);
+            var lon = parseFloat(lastEntry.field7.split(" ")[1]);
 
             if (!isNaN(lat) && !isNaN(lon)) {
               document.querySelector("#gps").textContent = lat.toFixed(6) + ', ' + lon.toFixed(6);
@@ -573,7 +570,6 @@ function FallenGuys() {
             } else {
               document.querySelector("#gps").textContent = "No GPS data available";
             }
-
 
             // =====================================
             // Past Alerts
@@ -684,7 +680,7 @@ function FallenGuys() {
             }
 
             // Check for fall, to raise alert on the webPage
-            if (fetched_data[fetched_data.length - 1]["field6"] === "1") {
+            if (fetched_data[fetched_data.length - 1]["field8"] === "1") {
               document.getElementById("fallAlert").style.backgroundColor =
                 "rgb(168, 34, 50)";
               document.getElementById("fallAlert").style.borderRadius = "13px";
@@ -695,7 +691,8 @@ function FallenGuys() {
               document.getElementById("alertLogo").src =
                 "../assets/images/logos/favicon.png";
               document.getElementById("alertLogo").alt = "Fall Alert";
-            } else {
+            }
+            else {
               document.getElementById("fallAlert").style.backgroundColor =
                 "white";
               document.getElementById("fallAlert").style.borderRadius = "13px";
