@@ -88,12 +88,39 @@ void setup()
 
 void connectToNetwork()
 {
-    // ... (unchanged)
+    WiFi.begin(WiFi_SSID, WiFi_PASS);
+    Serial.print("Connecting to WiFi");
+
+    unsigned long startAttemptTime = millis();
+    while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < 10000)
+    {
+        digitalWrite(LED, HIGH);
+        delay(100);
+        digitalWrite(LED, LOW);
+        delay(100);
+        Serial.print(".");
+    }
+
+    if (WiFi.status() == WL_CONNECTED)
+    {
+        Serial.println("\nWiFi connected");
+        Serial.println("IP address: ");
+        Serial.println(WiFi.localIP());
+        digitalWrite(LED, HIGH);
+    }
+    else
+    {
+        Serial.println("\nFailed to connect to WiFi");
+        digitalWrite(LED, LOW);
+    }
 }
 
 void sendLoRaMessage(String message)
 {
-    // ... (unchanged)
+    LoRa.beginPacket();
+    LoRa.print(message);
+    LoRa.endPacket();
+    Serial.println("LoRa message sent: " + message);
 }
 
 int counter = 0;
@@ -113,13 +140,42 @@ void loop()
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
 
-    // Print MPU6050 data (unchanged)
+    Serial.print("(");
+    Serial.print(counter);
+    Serial.println(")");
+
+    Serial.print("\tAcceleration X: ");
+    Serial.print(a.acceleration.x);
+    Serial.print(", Y: ");
+    Serial.print(a.acceleration.y);
+    Serial.print(", Z: ");
+    Serial.print(a.acceleration.z);
+    Serial.println(" m/s^2");
+
+    float accelMagnitude = sqrt(pow(a.acceleration.x, 2) + pow(a.acceleration.y, 2) + pow(a.acceleration.z, 2));
+    Serial.print("\tAcceleration Magnitude: ");
+    Serial.print(accelMagnitude);
+    Serial.println(" m/s^2");
+
+    highest_value = max(highest_value, accelMagnitude);
+
+    Serial.print("\tRotation X: ");
+    Serial.print(g.gyro.x);
+    Serial.print(", Y: ");
+    Serial.print(g.gyro.y);
+    Serial.print(", Z: ");
+    Serial.print(g.gyro.z);
+    Serial.println(" rad/s");
+
+    Serial.print("\tTemperature: ");
+    Serial.print(temp.temperature);
+    Serial.println(" degC");
+
+    Serial.println("");
 
     // Read GPS data
     while (Serial2.available() > 0)
-    {
         gps.encode(Serial2.read());
-    }
 
     if (counter++ == 300)
     {
@@ -159,9 +215,7 @@ void loop()
 
         // Add GPS coordinates to LoRa message if available
         if (gps.location.isValid())
-        {
             loraMessage += " LAT:" + String(gps.location.lat(), 6) + " LON:" + String(gps.location.lng(), 6);
-        }
         sendLoRaMessage(loraMessage);
 
         counter = 0;
