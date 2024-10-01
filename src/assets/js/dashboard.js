@@ -49,13 +49,7 @@ function FallenGuys() {
                   color: "#5073b3",
                   data: fetched_data
                     .slice(-100)
-                    .map((item) =>
-                      Math.sqrt(
-                        parseFloat(item.field4) ** 2 +
-                        parseFloat(item.field5) ** 2 +
-                        parseFloat(item.field6) ** 2
-                      ).toFixed(1)
-                    ),
+                    .map((item) => parseFloat(item.field5).toFixed(1)),
                 },
               ],
               stroke: {
@@ -86,12 +80,12 @@ function FallenGuys() {
               NangVel
             ).render();
             document.querySelector("#NangVel").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field6).toFixed(
+              parseFloat(fetched_data[fetched_data.length - 1].field5).toFixed(
                 1
               ) + " rad/s";
 
             // =====================================
-            // Max NEt Acceleration
+            // Max Net Acceleration
             // =====================================
             var maxNetAcc = {
               chart: {
@@ -111,7 +105,7 @@ function FallenGuys() {
                   color: "#29e7cd",
                   data: fetched_data
                     .slice(-100)
-                    .map((item) => parseFloat(item.field8).toFixed(1)),
+                    .map((item) => parseFloat(item.field4).toFixed(1)),
                 },
               ],
               stroke: {
@@ -142,7 +136,7 @@ function FallenGuys() {
               maxNetAcc
             ).render();
             document.querySelector("#maxnetacc").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field8).toFixed(
+              parseFloat(fetched_data[fetched_data.length - 1].field4).toFixed(
                 1
               ) + " m/s²";
 

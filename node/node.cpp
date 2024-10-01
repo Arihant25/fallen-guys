@@ -182,14 +182,18 @@ void loop()
         if (WiFi.status() != WL_CONNECTED)
             connectToNetwork();
 
+        int fallDetected = highest_value >= 15;
+        int netGyro = sqrt(pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2));
+        String GPSloc = String(gps.location.lat(), 6) + " " + String(gps.location.lng(), 6);
+
         ThingSpeak.setField(1, a.acceleration.x);
         ThingSpeak.setField(2, a.acceleration.y);
         ThingSpeak.setField(3, a.acceleration.z);
-        ThingSpeak.setField(4, g.gyro.x);
-        ThingSpeak.setField(5, g.gyro.y);
-        ThingSpeak.setField(6, g.gyro.z);
-        ThingSpeak.setField(7, String(gps.location.lat(), 6) + " " + String(gps.location.lng(), 6));
-        ThingSpeak.setField(8, highest_value >= 15);
+        ThingSpeak.setField(4, highest_value);
+        ThingSpeak.setField(5, netGyro);
+        // ThingSpeak.setField(6, NULL);
+        ThingSpeak.setField(7, GPSloc);
+        ThingSpeak.setField(8, fallDetected);
 
         int code = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
 
