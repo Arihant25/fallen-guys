@@ -9,8 +9,8 @@
 #include <TinyGPS++.h>
 
 // TODO: replace placeholders with actual values
-#define WiFi_SSID "Mohit's Pixel"
-#define WiFi_PASS "dung beetle"
+#define WiFi_SSID "WIFI_SSID"
+#define WiFi_PASS "WIFI_PASS"
 
 #define LED 35
 #define BUZZER_IO 27
