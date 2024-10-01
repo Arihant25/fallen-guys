@@ -1,12 +1,12 @@
 function FallenGuys() {
   $(function () {
     // Display GPS Location on Map
-    var map = L.map('map').setView([0, 0], 2);
+    var map = L.map('map').setView([17, 78], 11);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
-    var marker = L.marker([0, 0]).addTo(map);
+    var marker = L.marker([17, 78]).addTo(map);
     
     // Add click event listener to the map
     map.on('click', function(e) {
