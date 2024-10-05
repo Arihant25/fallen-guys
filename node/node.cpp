@@ -31,10 +31,21 @@ TinyGPSPlus gps;
 WiFiClient client;
 
 // TODO: replace placeholders with actual values
-unsigned long myChannelNumber = 123456789;
+unsigned long dataWriteChannelNumber = 123456789;
 const char *myWriteAPIKey = "WRITE_API_KEY";
 
+unsigned long thresholdReadChannel = 2678150;
+const char *myReadAPIKey = "RZH4FA34SCB2XOQX";
+
+// TODO: replace with actual password
+String readPassword = "PASSWD";
+
 bool alarmActive = false;
+
+// Default Thresholds
+int fallAcc_threshold = 15;
+int alert_threshold = 300;
+int emergencyContact = 112;
 
 void setup()
 {
@@ -83,6 +94,9 @@ void setup()
             ;
     }
 
+    // Read Thresholds from ThingSpeak
+    readThingSpeakThresholds();
+
     delay(2000);
 }
 
@@ -121,6 +135,38 @@ void sendLoRaMessage(String message)
     LoRa.print(message);
     LoRa.endPacket();
     Serial.println("LoRa message sent: " + message);
+}
+
+void readThingSpeakThresholds()
+{
+    // Reading Thresholds
+    String checkPassword = ThingSpeak.readStringField(thresholdReadChannel, 4, myReadAPIKey);
+    if(readPassword == checkPassword)
+    {
+      Serial.println("Authentication Successful.");
+      Serial.println("Reading and Updating Thresholds");
+      Serial.println();
+
+      ThingSpeak.readMultipleFields(thresholdReadChannel, myReadAPIKey);
+
+      // Update Thresholds
+      fallAcc_threshold = ThingSpeak.getFieldAsInt(1);
+      alert_threshold = ThingSpeak.getFieldAsInt(2);
+      emergencyContact = ThingSpeak.getFieldAsInt(3);
+      
+      Serial.println("Received thresholds from Server");
+      Serial.println("fallAcc = " + fallAcc_threshold);
+      Serial.println("alert = " + alert_threshold);
+      Serial.println("emergencyContact = " + emergencyContact);
+      Serial.println();
+
+    }
+    else
+    {
+      Serial.println("Authentication Failed.");
+      Serial.println("Reverting to default/previously obtained values...");
+      Serial.println();
+    }
 }
 
 int counter = 0;
@@ -182,7 +228,10 @@ void loop()
         if (WiFi.status() != WL_CONNECTED)
             connectToNetwork();
 
-        int fallDetected = highest_value >= 15;
+        // Reading Thresholds
+        readThingSpeakThresholds();
+
+        int fallDetected = highest_value >= fallAcc_threshold;
         int netGyro = sqrt(pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2));
         String GPSloc = String(gps.location.lat(), 6) + " " + String(gps.location.lng(), 6);
 
@@ -195,7 +244,7 @@ void loop()
         ThingSpeak.setField(7, GPSloc);
         ThingSpeak.setField(8, fallDetected);
 
-        int code = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
+        int code = ThingSpeak.writeFields(dataWriteChannelNumber, myWriteAPIKey);
 
         if (code == 200)
         {
@@ -209,7 +258,7 @@ void loop()
         }
 
         String loraMessage = "OK";
-        if (highest_value >= 15)
+        if (highest_value >= fallAcc_threshold)
         {
             alarmActive = true;
             digitalWrite(BUZZER_IO, LOW);
