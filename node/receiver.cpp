@@ -62,7 +62,7 @@ void loop()
 
     // Check for timeout
     if (millis() - lastMessageTime > MESSAGE_TIMEOUT)
-        activateAlarm("No signal received for 30 seconds");
+        activateAlarm(("No signal received for " + String((millis() - lastMessageTime) / 1000) + " seconds").c_str());
 
     // Print time since last message every second
     static unsigned long lastPrintTime = 0;
