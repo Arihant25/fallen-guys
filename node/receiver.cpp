@@ -17,7 +17,7 @@ void setup()
     while (!Serial)
         ;
 
-    Serial.println("LoRa Receiver - Debug Mode");
+    Serial.println("LoRa Receiver");
 
     LoRa.setPins(LORA_SS, LORA_RST, LORA_DIO0);
     if (!LoRa.begin(433E6))
@@ -57,7 +57,7 @@ void loop()
         else if (message == "OK")
             deactivateAlarm("Received OK signal");
         else
-            Serial.println("WARNING: Unexpected message received");
+            Serial.println("WARNING: Unexpected message received: " + message);
     }
 
     // Check for timeout

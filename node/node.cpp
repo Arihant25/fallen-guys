@@ -138,31 +138,30 @@ void readThingSpeakThresholds()
 {
     // Reading Thresholds
     String checkPassword = ThingSpeak.readStringField(thresholdReadChannel, 4, myReadAPIKey);
-    if(readPassword == checkPassword)
+    if (readPassword == checkPassword)
     {
-      Serial.println("Authentication Successful.");
-      Serial.println("Reading and Updating Thresholds");
-      Serial.println();
+        Serial.println("Authentication Successful.");
+        Serial.println("Reading and Updating Thresholds");
+        Serial.println();
 
-      ThingSpeak.readMultipleFields(thresholdReadChannel, myReadAPIKey);
+        ThingSpeak.readMultipleFields(thresholdReadChannel, myReadAPIKey);
 
-      // Update Thresholds
-      fallAcc_threshold = ThingSpeak.getFieldAsInt(1);
-      alert_threshold = ThingSpeak.getFieldAsInt(2);
-      emergencyContact = ThingSpeak.getFieldAsInt(3);
+        // Update Thresholds
+        fallAcc_threshold = ThingSpeak.getFieldAsInt(1);
+        alert_threshold = ThingSpeak.getFieldAsInt(2);
+        emergencyContact = ThingSpeak.getFieldAsInt(3);
 
-      Serial.println("Received thresholds from Server");
-      Serial.println("fallAcc = " + String(fallAcc_threshold));
-      Serial.println("alert = " + String(alert_threshold));
-      Serial.println("emergencyContact = " + String(emergencyContact));
-      Serial.println();
-
+        Serial.println("Received thresholds from Server");
+        Serial.println("fallAcc = " + String(fallAcc_threshold));
+        Serial.println("alert = " + String(alert_threshold));
+        Serial.println("emergencyContact = " + String(emergencyContact));
+        Serial.println();
     }
     else
     {
-      Serial.println("Authentication Failed.");
-      Serial.println("Reverting to default/previously obtained values...");
-      Serial.println();
+        Serial.println("Authentication Failed.");
+        Serial.println("Reverting to default/previously obtained values...");
+        Serial.println();
     }
 }
 
@@ -183,38 +182,38 @@ void loop()
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
 
-    Serial.print("(");
-    Serial.print(counter);
-    Serial.println(")");
+    // Serial.print("(");
+    // Serial.print(counter);
+    // Serial.println(")");
 
-    Serial.print("\tAcceleration X: ");
-    Serial.print(a.acceleration.x);
-    Serial.print(", Y: ");
-    Serial.print(a.acceleration.y);
-    Serial.print(", Z: ");
-    Serial.print(a.acceleration.z);
-    Serial.println(" m/s^2");
+    // Serial.print("\tAcceleration X: ");
+    // Serial.print(a.acceleration.x);
+    // Serial.print(", Y: ");
+    // Serial.print(a.acceleration.y);
+    // Serial.print(", Z: ");
+    // Serial.print(a.acceleration.z);
+    // Serial.println(" m/s^2");
 
     float accelMagnitude = sqrt(pow(a.acceleration.x, 2) + pow(a.acceleration.y, 2) + pow(a.acceleration.z, 2));
-    Serial.print("\tAcceleration Magnitude: ");
-    Serial.print(accelMagnitude);
-    Serial.println(" m/s^2");
+    // Serial.print("\tAcceleration Magnitude: ");
+    // Serial.print(accelMagnitude);
+    // Serial.println(" m/s^2");
 
     highest_value = max(highest_value, accelMagnitude);
 
-    Serial.print("\tRotation X: ");
-    Serial.print(g.gyro.x);
-    Serial.print(", Y: ");
-    Serial.print(g.gyro.y);
-    Serial.print(", Z: ");
-    Serial.print(g.gyro.z);
-    Serial.println(" rad/s");
+    // Serial.print("\tRotation X: ");
+    // Serial.print(g.gyro.x);
+    // Serial.print(", Y: ");
+    // Serial.print(g.gyro.y);
+    // Serial.print(", Z: ");
+    // Serial.print(g.gyro.z);
+    // Serial.println(" rad/s");
 
-    Serial.print("\tTemperature: ");
-    Serial.print(temp.temperature);
-    Serial.println(" degC");
-    Serial.println("\tfallAcc = " + String(fallAcc_threshold) + " alert = " + String(alert_threshold) + " emergency = " + String(emergencyContact));
-    Serial.println("");
+    // Serial.print("\tTemperature: ");
+    // Serial.print(temp.temperature);
+    // Serial.println(" degC");
+    // Serial.println("\tfallAcc = " + String(fallAcc_threshold) + " alert = " + String(alert_threshold) + " emergency = " + String(emergencyContact));
+    // Serial.println("");
 
     // Read GPS data
     while (Serial2.available() > 0)
