@@ -8,11 +8,7 @@ submitBtn.addEventListener("click", function (event) {
   var password = document.getElementById("password").value;
   var accepted = document.getElementById("accepted").checked;
 
-  // TODO: Better check for password
-  if (password !== "mohitmomgey") {
-    alert("Invalid Password!");
-  }
-  else if (isNaN(fallAcc)) {
+  if (isNaN(fallAcc)) {
     alert("Invalid Fall Acceleration Threshold!");
   }
   else if (isNaN(alertDelay)) {
