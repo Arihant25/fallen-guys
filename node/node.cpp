@@ -29,6 +29,13 @@ int emergencyContact = 112;
 const unsigned long SEND_INTERVAL = 5000; // Send data every 5 seconds
 unsigned long lastSendTime = 0;
 
+// Variables to track maximum values
+float maxAccX = 0, maxAccY = 0, maxAccZ = 0;
+float maxAccelMagnitude = 0;
+int maxNetGyro = 0;
+bool fallDetected = false;
+String lastValidGPSLocation = "0.000000,0.000000"; // Default GPS location
+
 void setup()
 {
     pinMode(LED, OUTPUT);
@@ -83,7 +90,9 @@ uint16_t calculateChecksum(const String &message)
 {
     uint16_t checksum = 0;
     for (char c : message)
+    {
         checksum += c;
+    }
     return checksum;
 }
 
@@ -91,33 +100,55 @@ void loop()
 {
     // Process GPS data
     while (Serial2.available() > 0)
-        gps.encode(Serial2.read());
+    {
+        if (gps.encode(Serial2.read()))
+        {
+            if (gps.location.isValid())
+            {
+                lastValidGPSLocation = String(gps.location.lat(), 6) + "," + String(gps.location.lng(), 6);
+            }
+        }
+    }
+
+    // Read sensor data and update maximum values
+    sensors_event_t a, g, temp;
+    mpu.getEvent(&a, &g, &temp);
+
+    float accelMagnitude = sqrt(pow(a.acceleration.x, 2) + pow(a.acceleration.y, 2) + pow(a.acceleration.z, 2));
+    int netGyro = sqrt(pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2));
+
+    maxAccX = max(maxAccX, abs(a.acceleration.x));
+    maxAccY = max(maxAccY, abs(a.acceleration.y));
+    maxAccZ = max(maxAccZ, abs(a.acceleration.z));
+    maxAccelMagnitude = max(maxAccelMagnitude, accelMagnitude);
+    maxNetGyro = max(maxNetGyro, netGyro);
+
+    if (accelMagnitude >= fallAcc_threshold)
+    {
+        fallDetected = true;
+    }
 
     unsigned long currentTime = millis();
 
     if (currentTime - lastSendTime >= SEND_INTERVAL)
     {
-        sensors_event_t a, g, temp;
-        mpu.getEvent(&a, &g, &temp);
-
-        float accelMagnitude = sqrt(pow(a.acceleration.x, 2) + pow(a.acceleration.y, 2) + pow(a.acceleration.z, 2));
-        int netGyro = sqrt(pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2));
-
-        String gpsLocation = String(gps.location.lat(), 6) + "," + String(gps.location.lng(), 6);
-        int fallDetected = (accelMagnitude >= fallAcc_threshold) ? 1 : 0;
-
-        String dataMessage = String(a.acceleration.x, 2) + "," +
-                             String(a.acceleration.y, 2) + "," +
-                             String(a.acceleration.z, 2) + "," +
-                             String(accelMagnitude, 2) + "," +
-                             String(netGyro) + "," +
-                             gpsLocation + "," +
-                             String(fallDetected);
+        String dataMessage = String(maxAccX, 2) + "," +
+                             String(maxAccY, 2) + "," +
+                             String(maxAccZ, 2) + "," +
+                             String(maxAccelMagnitude, 2) + "," +
+                             String(maxNetGyro) + "," +
+                             lastValidGPSLocation + "," +
+                             String(fallDetected ? 1 : 0);
 
         uint16_t checksum = calculateChecksum(dataMessage);
 
         String fullMessage = dataMessage + ":" + String(checksum);
         sendLoRaMessage(fullMessage);
+
+        // Reset maximum values after sending
+        maxAccX = maxAccY = maxAccZ = maxAccelMagnitude = 0;
+        maxNetGyro = 0;
+        fallDetected = false;
 
         lastSendTime = currentTime;
     }
@@ -128,7 +159,9 @@ void loop()
     {
         String message = "";
         while (LoRa.available())
+        {
             message += (char)LoRa.read();
+        }
 
         // Parse and update thresholds
         // Format: "THRESHOLDS:fallAcc,alert,emergency"
