@@ -28,8 +28,12 @@ int emergencyContact = 112;
 const unsigned long THINGSPEAK_INTERVAL = 15000; // 15 seconds
 unsigned long lastThingSpeakUpdate = 0;
 
+// Variables to store the latest data
+float latestAccX = 0, latestAccY = 0, latestAccZ = 0;
 float maxAccelMagnitude = 0;
 int maxNetGyro = 0;
+String latestGPSLocation = "";
+bool fallDetected = false;
 
 void setup()
 {
@@ -117,23 +121,53 @@ void loop()
 
 void processData(const String &data)
 {
-    int commaIndex = data.indexOf(',');
-    float accelMagnitude = data.substring(0, commaIndex).toFloat();
-    int netGyro = data.substring(commaIndex + 1).toInt();
+    // Parse the incoming data
+    // Format: accX,accY,accZ,accelMagnitude,netGyro,gpsLat,gpsLng,fallDetected
+    int commaIndex = 0;
+    int nextCommaIndex = data.indexOf(',');
+
+    latestAccX = data.substring(commaIndex, nextCommaIndex).toFloat();
+    commaIndex = nextCommaIndex + 1;
+    nextCommaIndex = data.indexOf(',', commaIndex);
+
+    latestAccY = data.substring(commaIndex, nextCommaIndex).toFloat();
+    commaIndex = nextCommaIndex + 1;
+    nextCommaIndex = data.indexOf(',', commaIndex);
+
+    latestAccZ = data.substring(commaIndex, nextCommaIndex).toFloat();
+    commaIndex = nextCommaIndex + 1;
+    nextCommaIndex = data.indexOf(',', commaIndex);
+
+    float accelMagnitude = data.substring(commaIndex, nextCommaIndex).toFloat();
+    commaIndex = nextCommaIndex + 1;
+    nextCommaIndex = data.indexOf(',', commaIndex);
+
+    int netGyro = data.substring(commaIndex, nextCommaIndex).toInt();
+    commaIndex = nextCommaIndex + 1;
+    nextCommaIndex = data.indexOf(',', commaIndex);
+
+    latestGPSLocation = data.substring(commaIndex, nextCommaIndex);
+    commaIndex = nextCommaIndex + 1;
+
+    fallDetected = data.substring(commaIndex).toInt() == 1;
 
     maxAccelMagnitude = max(maxAccelMagnitude, accelMagnitude);
     maxNetGyro = max(maxNetGyro, netGyro);
 
-    if (accelMagnitude >= fallAcc_threshold)
-    {
+    if (fallDetected)
         activateAlarm("Fall detected");
-    }
 }
 
 void updateThingSpeak()
 {
-    ThingSpeak.setField(1, maxAccelMagnitude);
-    ThingSpeak.setField(2, maxNetGyro);
+    ThingSpeak.setField(1, latestAccX);
+    ThingSpeak.setField(2, latestAccY);
+    ThingSpeak.setField(3, latestAccZ);
+    ThingSpeak.setField(4, maxAccelMagnitude);
+    ThingSpeak.setField(5, maxNetGyro);
+    // Field 6 is not used in the original code
+    ThingSpeak.setField(7, latestGPSLocation);
+    ThingSpeak.setField(8, fallDetected ? 1 : 0);
 
     int response = ThingSpeak.writeFields(dataWriteChannelNumber, myWriteAPIKey);
 
@@ -145,6 +179,7 @@ void updateThingSpeak()
     // Reset max values
     maxAccelMagnitude = 0;
     maxNetGyro = 0;
+    fallDetected = false;
 
     // Read updated thresholds
     readThingSpeakThresholds();

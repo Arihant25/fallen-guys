@@ -4,6 +4,7 @@
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <math.h>
+#include <TinyGPS++.h>
 
 #define LORA_SS 5
 #define LORA_RST 14
@@ -13,7 +14,12 @@
 #define BUTTON_PIN_INPUT 32
 #define BUTTON_PIN_OUTPUT 33
 
+// GPS module pins
+#define GPS_RX 25
+#define GPS_TX 26
+
 Adafruit_MPU6050 mpu;
+TinyGPSPlus gps;
 
 // Default Thresholds (will be updated by central node)
 int fallAcc_threshold = 15;
@@ -32,6 +38,7 @@ void setup()
     digitalWrite(BUTTON_PIN_OUTPUT, HIGH);
 
     Serial.begin(115200);
+    Serial2.begin(9600, SERIAL_8N1, GPS_RX, GPS_TX);
     Wire.begin();
 
     // MPU6050 setup
@@ -82,6 +89,10 @@ uint16_t calculateChecksum(const String &message)
 
 void loop()
 {
+    // Process GPS data
+    while (Serial2.available() > 0)
+        gps.encode(Serial2.read());
+
     unsigned long currentTime = millis();
 
     if (currentTime - lastSendTime >= SEND_INTERVAL)
@@ -92,7 +103,17 @@ void loop()
         float accelMagnitude = sqrt(pow(a.acceleration.x, 2) + pow(a.acceleration.y, 2) + pow(a.acceleration.z, 2));
         int netGyro = sqrt(pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2));
 
-        String dataMessage = String(accelMagnitude, 2) + "," + String(netGyro);
+        String gpsLocation = String(gps.location.lat(), 6) + "," + String(gps.location.lng(), 6);
+        int fallDetected = (accelMagnitude >= fallAcc_threshold) ? 1 : 0;
+
+        String dataMessage = String(a.acceleration.x, 2) + "," +
+                             String(a.acceleration.y, 2) + "," +
+                             String(a.acceleration.z, 2) + "," +
+                             String(accelMagnitude, 2) + "," +
+                             String(netGyro) + "," +
+                             gpsLocation + "," +
+                             String(fallDetected);
+
         uint16_t checksum = calculateChecksum(dataMessage);
 
         String fullMessage = dataMessage + ":" + String(checksum);
