@@ -1,23 +1,47 @@
+#include <WiFi.h>
+#include <ThingSpeak.h>
 #include <SPI.h>
 #include <LoRa.h>
+
+#define WiFi_SSID "drama queen"
+#define WiFi_PASS "ojeo6887"
 
 #define LORA_SS 5
 #define LORA_RST 14
 #define LORA_DIO0 2
 
 #define LED 22
-#define BUZZER_IO 27 // Changed to match sender code
+#define BUZZER_IO 27
 
-unsigned long lastMessageTime = 0;
-const unsigned long MESSAGE_TIMEOUT = 30000; // 30 seconds
+WiFiClient client;
+
+unsigned long dataWriteChannelNumber = 2684114;
+const char *myWriteAPIKey = "TTIBU3CIFKLESX0Z";
+
+unsigned long thresholdReadChannel = 2678150;
+const char *myReadAPIKey = "RZH4FA34SCB2XOQX";
+
+int fallAcc_threshold = 15;
+int alert_threshold = 300;
+int emergencyContact = 112;
+
+const unsigned long THINGSPEAK_INTERVAL = 15000; // 15 seconds
+unsigned long lastThingSpeakUpdate = 0;
+
+float maxAccelMagnitude = 0;
+int maxNetGyro = 0;
 
 void setup()
 {
     Serial.begin(115200);
-    while (!Serial)
-        ;
 
-    Serial.println("LoRa Receiver");
+    pinMode(LED, OUTPUT);
+    pinMode(BUZZER_IO, OUTPUT);
+    digitalWrite(LED, LOW);
+    digitalWrite(BUZZER_IO, HIGH);
+
+    connectToWiFi();
+    ThingSpeak.begin(client);
 
     LoRa.setPins(LORA_SS, LORA_RST, LORA_DIO0);
     if (!LoRa.begin(433E6))
@@ -27,13 +51,37 @@ void setup()
             ;
     }
 
-    pinMode(LED, OUTPUT);
-    pinMode(BUZZER_IO, OUTPUT);
+    // Read initial thresholds from ThingSpeak
+    readThingSpeakThresholds();
+}
 
-    digitalWrite(LED, LOW);
-    digitalWrite(BUZZER_IO, HIGH); // Changed to HIGH to match sender code (buzzer off)
+void connectToWiFi()
+{
+    WiFi.begin(WiFi_SSID, WiFi_PASS);
+    Serial.print("Connecting to WiFi");
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println("\nWiFi connected");
+}
 
-    Serial.println("Receiver initialized and waiting for messages...");
+void readThingSpeakThresholds()
+{
+    ThingSpeak.readMultipleFields(thresholdReadChannel, myReadAPIKey);
+    fallAcc_threshold = ThingSpeak.getFieldAsInt(1);
+    alert_threshold = ThingSpeak.getFieldAsInt(2);
+    emergencyContact = ThingSpeak.getFieldAsInt(3);
+    Serial.println("Updated thresholds from ThingSpeak");
+}
+
+uint16_t calculateChecksum(const String &message)
+{
+    uint16_t checksum = 0;
+    for (char c : message)
+        checksum += c;
+    return checksum;
 }
 
 void loop()
@@ -45,50 +93,79 @@ void loop()
         while (LoRa.available())
             message += (char)LoRa.read();
 
-        Serial.print("Received message: ");
-        Serial.println(message);
-        Serial.print("RSSI: ");
-        Serial.println(LoRa.packetRssi());
+        int colonIndex = message.lastIndexOf(':');
+        if (colonIndex != -1)
+        {
+            String data = message.substring(0, colonIndex);
+            uint16_t receivedChecksum = message.substring(colonIndex + 1).toInt();
+            uint16_t calculatedChecksum = calculateChecksum(data);
 
-        lastMessageTime = millis();
-
-        if (message == "FALL")
-            activateAlarm("Fall detected by sender");
-        else if (message == "OK")
-            deactivateAlarm("Received OK signal");
-        else
-            Serial.println("WARNING: Unexpected message received: " + message);
+            if (receivedChecksum == calculatedChecksum)
+                processData(data);
+            else
+                Serial.println("Checksum mismatch. Discarding data.");
+        }
     }
 
-    // Check for timeout
-    if (millis() - lastMessageTime > MESSAGE_TIMEOUT)
-        activateAlarm(("No signal received for " + String((millis() - lastMessageTime) / 1000) + " seconds").c_str());
-
-    // Print time since last message every second
-    static unsigned long lastPrintTime = 0;
-    if (millis() - lastPrintTime > 1000)
+    unsigned long currentTime = millis();
+    if (currentTime - lastThingSpeakUpdate >= THINGSPEAK_INTERVAL)
     {
-        Serial.print("Time since last message: ");
-        Serial.print((millis() - lastMessageTime) / 1000);
-        Serial.println(" seconds");
-        lastPrintTime = millis();
+        updateThingSpeak();
+        lastThingSpeakUpdate = currentTime;
     }
+}
+
+void processData(const String &data)
+{
+    int commaIndex = data.indexOf(',');
+    float accelMagnitude = data.substring(0, commaIndex).toFloat();
+    int netGyro = data.substring(commaIndex + 1).toInt();
+
+    maxAccelMagnitude = max(maxAccelMagnitude, accelMagnitude);
+    maxNetGyro = max(maxNetGyro, netGyro);
+
+    if (accelMagnitude >= fallAcc_threshold)
+    {
+        activateAlarm("Fall detected");
+    }
+}
+
+void updateThingSpeak()
+{
+    ThingSpeak.setField(1, maxAccelMagnitude);
+    ThingSpeak.setField(2, maxNetGyro);
+
+    int response = ThingSpeak.writeFields(dataWriteChannelNumber, myWriteAPIKey);
+
+    if (response == 200)
+        Serial.println("ThingSpeak update successful");
+    else
+        Serial.println("ThingSpeak update failed. Error: " + String(response));
+
+    // Reset max values
+    maxAccelMagnitude = 0;
+    maxNetGyro = 0;
+
+    // Read updated thresholds
+    readThingSpeakThresholds();
+
+    // Send updated thresholds to end-user node
+    String thresholdMessage = "THRESHOLDS:" + String(fallAcc_threshold) + "," + String(alert_threshold) + "," + String(emergencyContact);
+    LoRa.beginPacket();
+    LoRa.print(thresholdMessage);
+    LoRa.endPacket();
 }
 
 void activateAlarm(const char *reason)
 {
     digitalWrite(LED, HIGH);
-    digitalWrite(BUZZER_IO, LOW); // Changed to LOW to activate buzzer
-    Serial.print("ALARM ACTIVATED: ");
-    Serial.println(reason);
-    Serial.println("LED ON and Buzzer ON");
+    digitalWrite(BUZZER_IO, LOW);
+    Serial.println("ALARM ACTIVATED: " + String(reason));
 }
 
-void deactivateAlarm(const char *reason)
+void deactivateAlarm()
 {
     digitalWrite(LED, LOW);
-    digitalWrite(BUZZER_IO, HIGH); // Changed to HIGH to deactivate buzzer
-    Serial.print("ALARM DEACTIVATED: ");
-    Serial.println(reason);
-    Serial.println("LED OFF and Buzzer OFF");
+    digitalWrite(BUZZER_IO, HIGH);
+    Serial.println("ALARM DEACTIVATED");
 }
