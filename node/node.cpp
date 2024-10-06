@@ -152,9 +152,9 @@ void readThingSpeakThresholds()
       emergencyContact = ThingSpeak.getFieldAsInt(3);
 
       Serial.println("Received thresholds from Server");
-      Serial.println("fallAcc = " + fallAcc_threshold);
-      Serial.println("alert = " + alert_threshold);
-      Serial.println("emergencyContact = " + emergencyContact);
+      Serial.println("fallAcc = " + String(fallAcc_threshold));
+      Serial.println("alert = " + String(alert_threshold));
+      Serial.println("emergencyContact = " + String(emergencyContact));
       Serial.println();
 
     }
@@ -213,7 +213,7 @@ void loop()
     Serial.print("\tTemperature: ");
     Serial.print(temp.temperature);
     Serial.println(" degC");
-
+    Serial.println("\tfallAcc = " + String(fallAcc_threshold) + " alert = " + String(alert_threshold) + " emergency = " + String(emergencyContact));
     Serial.println("");
 
     // Read GPS data
