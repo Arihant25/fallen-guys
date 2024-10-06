@@ -34,7 +34,7 @@ float maxAccX = 0, maxAccY = 0, maxAccZ = 0;
 float maxAccelMagnitude = 0;
 int maxNetGyro = 0;
 bool fallDetected = false;
-String lastValidGPSLocation = "0.000000,0.000000"; // Default GPS location
+String lastValidGPSLocation = "17.447315,78.348787"; // Default GPS location
 
 void setup()
 {
@@ -124,9 +124,7 @@ void loop()
     maxNetGyro = max(maxNetGyro, netGyro);
 
     if (accelMagnitude >= fallAcc_threshold)
-    {
         fallDetected = true;
-    }
 
     unsigned long currentTime = millis();
 
@@ -159,9 +157,7 @@ void loop()
     {
         String message = "";
         while (LoRa.available())
-        {
             message += (char)LoRa.read();
-        }
 
         // Parse and update thresholds
         // Format: "THRESHOLDS:fallAcc,alert,emergency"
