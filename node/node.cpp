@@ -8,9 +8,8 @@
 #include <LoRa.h>
 #include <TinyGPS++.h>
 
-// TODO: replace placeholders with actual values
-#define WiFi_SSID "WIFI_SSID"
-#define WiFi_PASS "WIFI_PASS"
+#define WiFi_SSID "drama queen"
+#define WiFi_PASS "ojeo6887"
 
 #define LED 35
 #define BUZZER_IO 27
@@ -30,14 +29,12 @@ Adafruit_MPU6050 mpu;
 TinyGPSPlus gps;
 WiFiClient client;
 
-// TODO: replace placeholders with actual values
-unsigned long dataWriteChannelNumber = 123456789;
-const char *myWriteAPIKey = "WRITE_API_KEY";
+unsigned long dataWriteChannelNumber = 2684114;
+const char *myWriteAPIKey = "TTIBU3CIFKLESX0Z";
 
 unsigned long thresholdReadChannel = 2678150;
 const char *myReadAPIKey = "RZH4FA34SCB2XOQX";
 
-// TODO: replace with actual password
 String readPassword = "PASSWD";
 
 bool alarmActive = false;
@@ -153,7 +150,7 @@ void readThingSpeakThresholds()
       fallAcc_threshold = ThingSpeak.getFieldAsInt(1);
       alert_threshold = ThingSpeak.getFieldAsInt(2);
       emergencyContact = ThingSpeak.getFieldAsInt(3);
-      
+
       Serial.println("Received thresholds from Server");
       Serial.println("fallAcc = " + fallAcc_threshold);
       Serial.println("alert = " + alert_threshold);
