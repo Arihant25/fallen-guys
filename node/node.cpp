@@ -26,7 +26,7 @@ TinyGPSPlus gps;
 
 // Default Thresholds (will be updated by central node)
 int fallAcc_threshold = 50;
-int alert_threshold = 300;
+int alert_threshold = 10;
 int emergencyContact = 112;
 
 const unsigned long SEND_INTERVAL = 5000; // Send data every 5 seconds
@@ -39,7 +39,8 @@ int maxNetGyro = 0;
 bool fallDetected = false;
 String lastValidGPSLocation = "17.447315,78.348787"; // Default GPS location
 
-long alertDelayStart = 0;
+unsigned long alertDelayStart = 0;
+bool isDelayStarted = false;
 
 void setup()
 {
@@ -130,8 +131,6 @@ void loop()
     float accelMagnitude = sqrt(pow(a.acceleration.x, 2) + pow(a.acceleration.y, 2) + pow(a.acceleration.z, 2));
     int netGyro = sqrt(pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2));
 
-    static int alertDelayStart = millis();
-
     maxAccX = max(maxAccX, abs(a.acceleration.x));
     maxAccY = max(maxAccY, abs(a.acceleration.y));
     maxAccZ = max(maxAccZ, abs(a.acceleration.z));
@@ -140,12 +139,16 @@ void loop()
 
     if (accelMagnitude >= fallAcc_threshold && !fallDetected)
     {
-        fallDetected = true;
-
+        isDelayStarted = true;
+        Serial.println(String(alert_threshold));
+        alertDelayStart = millis();
         activateAlerts();
     }
 
     unsigned long currentTime = millis();
+
+    if(isDelayStarted && ((currentTime - alertDelayStart) >= alert_threshold*1000))
+      fallDetected = true;
 
     if (currentTime - lastSendTime >= SEND_INTERVAL)
     {

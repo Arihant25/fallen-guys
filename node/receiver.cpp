@@ -3,8 +3,8 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-#define WiFi_SSID "WIFI_SSID"
-#define WiFi_PASS "WIFI_PWD"
+#define WiFi_SSID "ass"
+#define WiFi_PASS "balls in your ass"
 
 #define LORA_SS 5
 #define LORA_RST 14
