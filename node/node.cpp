@@ -13,6 +13,9 @@
 #define LED 35
 #define BUTTON_PIN_INPUT 32
 #define BUTTON_PIN_OUTPUT 33
+#define BUZZER_PIN 32 // Added buzzer pin
+#define LED_ALERT 33  // Added alert LED pin
+#define LED_REVERSE 4 // Added reverse LED pin
 
 // GPS module pins
 #define GPS_RX 25
@@ -43,6 +46,15 @@ void setup()
     pinMode(BUTTON_PIN_INPUT, INPUT);
     pinMode(BUTTON_PIN_OUTPUT, OUTPUT);
     digitalWrite(BUTTON_PIN_OUTPUT, HIGH);
+
+    // Initialize new pins
+    pinMode(BUZZER_PIN, OUTPUT);
+    pinMode(LED_ALERT, OUTPUT);
+    pinMode(LED_REVERSE, OUTPUT);
+
+    digitalWrite(BUZZER_PIN, LOW);
+    digitalWrite(LED_ALERT, LOW);
+    digitalWrite(LED_REVERSE, HIGH); // Reverse LED starts ON
 
     Serial.begin(115200);
     Serial2.begin(9600, SERIAL_8N1, GPS_RX, GPS_TX);
@@ -76,6 +88,13 @@ void setup()
     }
 
     delay(2000);
+}
+
+void activateAlerts()
+{
+    digitalWrite(BUZZER_PIN, HIGH);
+    digitalWrite(LED_ALERT, HIGH);
+    digitalWrite(LED_REVERSE, LOW);
 }
 
 void sendLoRaMessage(String message)
@@ -115,8 +134,11 @@ void loop()
     maxAccelMagnitude = max(maxAccelMagnitude, accelMagnitude);
     maxNetGyro = max(maxNetGyro, netGyro);
 
-    if (accelMagnitude >= fallAcc_threshold)
+    if (accelMagnitude >= fallAcc_threshold && !fallDetected)
+    {
         fallDetected = true;
+        activateAlerts();
+    }
 
     unsigned long currentTime = millis();
 
@@ -135,10 +157,9 @@ void loop()
         String fullMessage = dataMessage + ":" + String(checksum);
         sendLoRaMessage(fullMessage);
 
-        // Reset maximum values after sending
+        // Reset maximum values after sending, but keep fallDetected state
         maxAccX = maxAccY = maxAccZ = maxAccelMagnitude = 0;
         maxNetGyro = 0;
-        fallDetected = false;
 
         lastSendTime = currentTime;
     }
