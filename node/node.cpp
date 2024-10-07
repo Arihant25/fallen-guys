@@ -22,7 +22,7 @@ Adafruit_MPU6050 mpu;
 TinyGPSPlus gps;
 
 // Default Thresholds (will be updated by central node)
-int fallAcc_threshold = 15;
+int fallAcc_threshold = 50;
 int alert_threshold = 300;
 int emergencyContact = 112;
 
@@ -90,9 +90,7 @@ uint16_t calculateChecksum(const String &message)
 {
     uint16_t checksum = 0;
     for (char c : message)
-    {
         checksum += c;
-    }
     return checksum;
 }
 
@@ -100,15 +98,9 @@ void loop()
 {
     // Process GPS data
     while (Serial2.available() > 0)
-    {
         if (gps.encode(Serial2.read()))
-        {
             if (gps.location.isValid())
-            {
                 lastValidGPSLocation = String(gps.location.lat(), 6) + "," + String(gps.location.lng(), 6);
-            }
-        }
-    }
 
     // Read sensor data and update maximum values
     sensors_event_t a, g, temp;

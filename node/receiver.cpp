@@ -11,6 +11,7 @@
 #define LORA_DIO0 2
 
 #define LED 22
+#define REVERSE_LED 4 // New reverse LED pin
 #define BUZZER_IO 27
 
 WiFiClient client;
@@ -21,7 +22,7 @@ const char *myWriteAPIKey = "TTIBU3CIFKLESX0Z";
 unsigned long thresholdReadChannel = 2678150;
 const char *myReadAPIKey = "RZH4FA34SCB2XOQX";
 
-int fallAcc_threshold = 15;
+int fallAcc_threshold = 50;
 int alert_threshold = 300;
 int emergencyContact = 112;
 
@@ -40,9 +41,11 @@ void setup()
     Serial.begin(115200);
 
     pinMode(LED, OUTPUT);
+    pinMode(REVERSE_LED, OUTPUT); // Initialize the reverse LED pin
     pinMode(BUZZER_IO, OUTPUT);
     digitalWrite(LED, LOW);
-    digitalWrite(BUZZER_IO, HIGH);
+    digitalWrite(REVERSE_LED, HIGH); // Set reverse LED to opposite state
+    digitalWrite(BUZZER_IO, LOW);
 
     connectToWiFi();
     ThingSpeak.begin(client);
@@ -93,9 +96,13 @@ void loop()
     int packetSize = LoRa.parsePacket();
     if (packetSize)
     {
+        Serial.print("Packet size: ");
+        Serial.println(packetSize);
         String message = "";
         while (LoRa.available())
             message += (char)LoRa.read();
+
+        Serial.println(message);
 
         int colonIndex = message.lastIndexOf(':');
         if (colonIndex != -1)
@@ -105,17 +112,18 @@ void loop()
             uint16_t calculatedChecksum = calculateChecksum(data);
 
             if (receivedChecksum == calculatedChecksum)
+            {
                 processData(data);
+                unsigned long currentTime = millis();
+                if (currentTime - lastThingSpeakUpdate >= THINGSPEAK_INTERVAL)
+                {
+                    // updateThingSpeak();
+                    lastThingSpeakUpdate = currentTime;
+                }
+            }
             else
                 Serial.println("Checksum mismatch. Discarding data.");
         }
-    }
-
-    unsigned long currentTime = millis();
-    if (currentTime - lastThingSpeakUpdate >= THINGSPEAK_INTERVAL)
-    {
-        updateThingSpeak();
-        lastThingSpeakUpdate = currentTime;
     }
 }
 
@@ -123,6 +131,7 @@ void processData(const String &data)
 {
     // Parse the incoming data
     // Format: accX,accY,accZ,accelMagnitude,netGyro,gpsLat,gpsLng,fallDetected
+    Serial.println("Process data");
     int commaIndex = 0;
     int nextCommaIndex = data.indexOf(',');
 
@@ -145,11 +154,20 @@ void processData(const String &data)
     int netGyro = data.substring(commaIndex, nextCommaIndex).toInt();
     commaIndex = nextCommaIndex + 1;
     nextCommaIndex = data.indexOf(',', commaIndex);
+    int temp = nextCommaIndex + 1;
+    nextCommaIndex = data.indexOf(',', temp);
+
+    int colonIndex = data.indexOf(':');
 
     latestGPSLocation = data.substring(commaIndex, nextCommaIndex);
+    Serial.printf("cI: %d nCI: %d\n", commaIndex, nextCommaIndex);
     commaIndex = nextCommaIndex + 1;
 
-    fallDetected = data.substring(commaIndex).toInt() == 1;
+    Serial.println(latestGPSLocation);
+
+    fallDetected = fallDetected || (data.substring(commaIndex, colonIndex).toInt() == 1);
+
+    Serial.println(data.substring(commaIndex, colonIndex).toInt());
 
     maxAccelMagnitude = max(maxAccelMagnitude, accelMagnitude);
     maxNetGyro = max(maxNetGyro, netGyro);
@@ -186,21 +204,24 @@ void updateThingSpeak()
 
     // Send updated thresholds to end-user node
     String thresholdMessage = "THRESHOLDS:" + String(fallAcc_threshold) + "," + String(alert_threshold) + "," + String(emergencyContact);
-    LoRa.beginPacket();
-    LoRa.print(thresholdMessage);
-    LoRa.endPacket();
+    Serial.println(thresholdMessage);
+    // LoRa.beginPacket();
+    // LoRa.print(thresholdMessage);
+    // LoRa.endPacket();
 }
 
 void activateAlarm(const char *reason)
 {
     digitalWrite(LED, HIGH);
-    digitalWrite(BUZZER_IO, LOW);
+    digitalWrite(REVERSE_LED, LOW); // Set reverse LED to opposite state
+    digitalWrite(BUZZER_IO, HIGH);
     Serial.println("ALARM ACTIVATED: " + String(reason));
 }
 
 void deactivateAlarm()
 {
     digitalWrite(LED, LOW);
-    digitalWrite(BUZZER_IO, HIGH);
+    digitalWrite(REVERSE_LED, HIGH); // Set reverse LED to opposite state
+    digitalWrite(BUZZER_IO, LOW);
     Serial.println("ALARM DEACTIVATED");
 }
