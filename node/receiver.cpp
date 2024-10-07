@@ -3,8 +3,8 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-#define WiFi_SSID "drama queen"
-#define WiFi_PASS "ojeo6887"
+#define WiFi_SSID "WIFI_SSID"
+#define WiFi_PASS "WIFI_PWD"
 
 #define LORA_SS 5
 #define LORA_RST 14
@@ -44,7 +44,7 @@ void setup()
     pinMode(REVERSE_LED, OUTPUT); // Initialize the reverse LED pin
     pinMode(BUZZER_IO, OUTPUT);
     digitalWrite(LED, LOW);
-    digitalWrite(REVERSE_LED, HIGH); // Set reverse LED to opposite state
+    digitalWrite(REVERSE_LED, LOW);
     digitalWrite(BUZZER_IO, LOW);
 
     connectToWiFi();
@@ -60,6 +60,8 @@ void setup()
 
     // Read initial thresholds from ThingSpeak
     readThingSpeakThresholds();
+
+    digitalWrite(REVERSE_LED, HIGH); // Set reverse LED to opposite state
 }
 
 void connectToWiFi()
@@ -81,6 +83,7 @@ void readThingSpeakThresholds()
     alert_threshold = ThingSpeak.getFieldAsInt(2);
     emergencyContact = ThingSpeak.getFieldAsInt(3);
     Serial.println("Updated thresholds from ThingSpeak");
+    Serial.printf("f: %d, a: %d, e: %d\n", fallAcc_threshold, alert_threshold, emergencyContact);
 }
 
 uint16_t calculateChecksum(const String &message)

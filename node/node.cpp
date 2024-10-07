@@ -39,6 +39,8 @@ int maxNetGyro = 0;
 bool fallDetected = false;
 String lastValidGPSLocation = "17.447315,78.348787"; // Default GPS location
 
+long alertDelayStart = 0;
+
 void setup()
 {
     pinMode(LED, OUTPUT);
@@ -128,6 +130,8 @@ void loop()
     float accelMagnitude = sqrt(pow(a.acceleration.x, 2) + pow(a.acceleration.y, 2) + pow(a.acceleration.z, 2));
     int netGyro = sqrt(pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2));
 
+    static int alertDelayStart = millis();
+
     maxAccX = max(maxAccX, abs(a.acceleration.x));
     maxAccY = max(maxAccY, abs(a.acceleration.y));
     maxAccZ = max(maxAccZ, abs(a.acceleration.z));
@@ -137,6 +141,7 @@ void loop()
     if (accelMagnitude >= fallAcc_threshold && !fallDetected)
     {
         fallDetected = true;
+
         activateAlerts();
     }
 
