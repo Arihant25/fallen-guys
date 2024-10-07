@@ -117,7 +117,7 @@ void loop()
                 unsigned long currentTime = millis();
                 if (currentTime - lastThingSpeakUpdate >= THINGSPEAK_INTERVAL)
                 {
-                    // updateThingSpeak();
+                    updateThingSpeak();
                     lastThingSpeakUpdate = currentTime;
                 }
             }
@@ -205,9 +205,9 @@ void updateThingSpeak()
     // Send updated thresholds to end-user node
     String thresholdMessage = "THRESHOLDS:" + String(fallAcc_threshold) + "," + String(alert_threshold) + "," + String(emergencyContact);
     Serial.println(thresholdMessage);
-    // LoRa.beginPacket();
-    // LoRa.print(thresholdMessage);
-    // LoRa.endPacket();
+    LoRa.beginPacket();
+    LoRa.print(thresholdMessage);
+    LoRa.endPacket();
 }
 
 void activateAlarm(const char *reason)
