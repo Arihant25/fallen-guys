@@ -172,7 +172,7 @@ function FallenGuys() {
 
             var lastAlert = document.getElementById("lastAlert");
             for (var i = fetched_data.length - 1; i >= 0; i--) {
-              if (parseFloat(fetched_data[i].field8) == 1) {
+              if (parseFloat(fetched_data[i].field6) == 1) {
                 var li = document.createElement("li");
                 li.className = "timeline-item d-flex position-relative overflow-hidden";
 
@@ -219,7 +219,7 @@ function FallenGuys() {
                 var fallAcc = document.createElement("span");
                 fallAcc.className = "text-primary d-block fw-normal";
                 fallAcc.textContent = `Fall Acceleration: ${parseInt(
-                  fetched_data[i].field8
+                  fetched_data[i].field4
                 )} m/s^2`;
                 div3.appendChild(fallAcc);
 
