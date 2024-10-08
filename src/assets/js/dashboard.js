@@ -16,22 +16,15 @@ function FallenGuys() {
       window.open(googleMapsUrl, '_blank');
     });
 
-    // Fetch data from both channels
-    Promise.all([
-      fetch("https://api.thingspeak.com/channels/2658268/feeds.json?api_key=FRIN88PUMDP9QGS4"),
-      fetch("https://api.thingspeak.com/channels/2684114/feeds.json?api_key=FRIN88PUMDP9QGS4")
-    ])
-      .then(responses => Promise.all(responses.map(response => response.json())))
-      .then(([mainData, gpsData]) => {
-        // Fetch all entries from both channels
-        Promise.all([
-          fetch(`https://api.thingspeak.com/channels/2658268/feeds.json?api_key=FRIN88PUMDP9QGS4&results=${mainData.channel.last_entry_id}`),
-          fetch(`https://api.thingspeak.com/channels/2684114/feeds.json?api_key=FRIN88PUMDP9QGS4&results=${gpsData.channel.last_entry_id}`)
-        ])
-          .then(responses => Promise.all(responses.map(response => response.json())))
-          .then(([mainFullData, gpsFullData]) => {
-            var fetched_data = mainFullData.feeds;
-            var gps_data = gpsFullData.feeds;
+    // Fetch data from the channel
+    fetch("https://api.thingspeak.com/channels/2684114/feeds.json?api_key=TTIBU3CIFKLESX0Z")
+      .then(response => response.json())
+      .then(data => {
+        // Fetch all entries from the channel
+        fetch(`https://api.thingspeak.com/channels/2684114/feeds.json?api_key=TTIBU3CIFKLESX0Z&results=${data.channel.last_entry_id}`)
+          .then(response => response.json())
+          .then(fullData => {
+            var fetched_data = fullData.feeds;
 
             // Angular Velocity Plot
             var NangVel = {
@@ -138,9 +131,9 @@ function FallenGuys() {
               parseFloat(fetched_data[fetched_data.length - 1].field4).toFixed(1) + " m/s²";
 
             // Update GPS Coordinates
-            var lastGPSEntry = gps_data[gps_data.length - 1];
-            if (lastGPSEntry.field7) {
-              var [lat, lon] = lastGPSEntry.field7.split(',').map(Number);
+            var lastEntry = fetched_data[fetched_data.length - 1];
+            if (lastEntry.field7) {
+              var [lat, lon] = lastEntry.field7.split(',').map(Number);
               if (!isNaN(lat) && !isNaN(lon)) {
                 document.querySelector("#gps").textContent = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
                 marker.setLatLng([lat, lon]);
@@ -229,27 +222,16 @@ function FallenGuys() {
                   fetched_data[i].field8
                 )} m/s^2`;
                 div3.appendChild(fallAcc);
+
                 var fallAngVel = document.createElement("span");
                 fallAngVel.className = "text-primary d-block fw-normal";
-                fallAngVel.textContent = `Angular Velocity: ${Math.sqrt(
-                  parseFloat(fetched_data[i].field4) ** 2 +
-                  parseFloat(fetched_data[i].field5) ** 2 +
-                  parseFloat(fetched_data[i].field6) ** 2
-                ).toFixed(1)} rad/s`;
+                fallAngVel.textContent = `Angular Velocity: ${parseFloat(fetched_data[i].field5).toFixed(1)} rad/s`;
                 div3.appendChild(fallAngVel);
-
-                // Find corresponding GPS data for this alert
-                var alertTime = new Date(fetched_data[i].created_at);
-                var closestGPSEntry = gps_data.reduce((prev, curr) => {
-                  var prevTime = new Date(prev.created_at);
-                  var currTime = new Date(curr.created_at);
-                  return Math.abs(currTime - alertTime) < Math.abs(prevTime - alertTime) ? curr : prev;
-                });
 
                 var GPSLoc = document.createElement("span");
                 GPSLoc.className = "text-primary d-block fw-normal";
-                if (closestGPSEntry.field7) {
-                  var [gpsLat, gpsLon] = closestGPSEntry.field7.split(',').map(Number);
+                if (fetched_data[i].field7) {
+                  var [gpsLat, gpsLon] = fetched_data[i].field7.split(',').map(Number);
                   if (!isNaN(gpsLat) && !isNaN(gpsLon)) {
                     GPSLoc.textContent = `GPS Location: ${gpsLat.toFixed(6)}, ${gpsLon.toFixed(6)}`;
                   } else {
