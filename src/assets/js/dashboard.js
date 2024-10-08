@@ -261,8 +261,6 @@ function FallenGuys() {
                 }
               }
 
-
-
               document.getElementById("fallAlert").style.backgroundColor =
                 "rgb(168, 34, 50)";
               document.getElementById("fallAlert").style.borderRadius = "13px";
