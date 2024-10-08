@@ -87,7 +87,6 @@ void readThingSpeakThresholds()
     alert_threshold = ThingSpeak.getFieldAsInt(2);
     emergencyContact = ThingSpeak.getFieldAsInt(3);
     Serial.println("Updated thresholds from ThingSpeak");
-    Serial.printf("f: %d, a: %d, e: %d\n", fallAcc_threshold, alert_threshold, emergencyContact);
 }
 
 uint16_t calculateChecksum(const String &message)
@@ -103,12 +102,11 @@ void loop()
     int packetSize = LoRa.parsePacket();
     if (packetSize)
     {
-        Serial.print("Packet size: ");
-        Serial.println(packetSize);
         String message = "";
         while (LoRa.available())
             message += (char)LoRa.read();
 
+        Serial.print("message: ");
         Serial.println(message);
 
         int colonIndex = message.lastIndexOf(':');
@@ -138,7 +136,6 @@ void processData(const String &data)
 {
     // Parse the incoming data
     // Format: accX,accY,accZ,accelMagnitude,netGyro,gpsLat,gpsLng,fallDetected
-    Serial.println("Process data");
     int commaIndex = 0;
     int nextCommaIndex = data.indexOf(',');
 
@@ -167,14 +164,9 @@ void processData(const String &data)
     int colonIndex = data.indexOf(':');
 
     latestGPSLocation = data.substring(commaIndex, nextCommaIndex);
-    Serial.printf("cI: %d nCI: %d\n", commaIndex, nextCommaIndex);
     commaIndex = nextCommaIndex + 1;
 
-    Serial.println(latestGPSLocation);
-
     fallDetected = fallDetected || (data.substring(commaIndex, colonIndex).toInt() == 1);
-
-    Serial.println(data.substring(commaIndex, colonIndex).toInt());
 
     maxAccelMagnitude = max(maxAccelMagnitude, accelMagnitude);
     maxNetGyro = max(maxNetGyro, netGyro);
@@ -190,7 +182,7 @@ void updateThingSpeak()
     ThingSpeak.setField(3, latestAccZ);
     ThingSpeak.setField(4, maxAccelMagnitude);
     ThingSpeak.setField(5, maxNetGyro);
-    // Field 6 is not used in the original code
+    ThingSpeak.setField(6, (maxAccelMagnitude > fallAcc_threshold) ? 1 : 0);
     ThingSpeak.setField(7, latestGPSLocation);
     ThingSpeak.setField(8, fallDetected ? 1 : 0);
 
