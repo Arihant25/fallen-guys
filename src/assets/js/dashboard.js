@@ -286,4 +286,7 @@ function FallenGuys() {
 }
 
 FallenGuys();
-setInterval(FallenGuys, 15000);
+
+setInterval(function() {
+    location.reload();
+}, 15000);
