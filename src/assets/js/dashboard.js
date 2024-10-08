@@ -214,7 +214,7 @@ function FallenGuys() {
 
                 var div3 = document.createElement("div");
                 div3.className = "timeline-desc fs-3 text-dark mt-n1 fw-semibold";
-                div3.textContent = "Fall Detected! ";
+                div3.textContent = "Fall Detected!";
 
                 var fallAcc = document.createElement("span");
                 fallAcc.className = "text-primary d-block fw-normal";
@@ -252,17 +252,29 @@ function FallenGuys() {
 
             // Current Alert Status
             if (fetched_data[fetched_data.length - 1]["field8"] === "1") {
+              // Get Alert Acc Value
+              var alertAcc = "";
+              for (var i = fetched_data.length - 1; i >= 0; i--) {
+                if (parseFloat(fetched_data[i].field6) == 1) {
+                  alertAcc = `${parseInt(fetched_data[i].field4)} m/s^2`;
+                  break;
+                }
+              }
+
+
+
               document.getElementById("fallAlert").style.backgroundColor =
                 "rgb(168, 34, 50)";
               document.getElementById("fallAlert").style.borderRadius = "13px";
 
-              document.getElementById("alertText").innerHTML = "Fall Detected!";
+              document.getElementById("alertText").innerHTML = "Fall Detected : " + alertAcc
               document.getElementById("alertText").style.color = "white";
 
               document.getElementById("alertLogo").src =
                 "../assets/images/logos/favicon.png";
               document.getElementById("alertLogo").alt = "Fall Alert";
-            } else {
+            }
+            else {
               document.getElementById("fallAlert").style.backgroundColor =
                 "white";
               document.getElementById("fallAlert").style.borderRadius = "13px";
