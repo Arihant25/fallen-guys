@@ -288,5 +288,5 @@ function FallenGuys() {
 FallenGuys();
 
 setInterval(function() {
-    window.open("https:arihant25.github.io/fallen-guys", "_self");
+    location.reload();
 }, 15000);
