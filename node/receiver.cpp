@@ -3,6 +3,8 @@
 #include <SPI.h>
 #include <LoRa.h>
 
+// TODO: Replace with WiFi credentials
+
 #define WiFi_SSID "WIFI_SSID"
 #define WiFi_PASS "WIFI_PASS"
 
@@ -15,6 +17,8 @@
 #define BUZZER_IO 27
 
 WiFiClient client;
+
+// TODO: Replace with ThingSpeak channel details
 
 unsigned long dataWriteChannelNumber = 0000000;
 const char *myWriteAPIKey = "WRITE_API_KEY";
