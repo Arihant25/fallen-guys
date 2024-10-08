@@ -172,7 +172,7 @@ function FallenGuys() {
 
             var lastAlert = document.getElementById("lastAlert");
             for (var i = fetched_data.length - 1; i >= 0; i--) {
-              if (parseFloat(fetched_data[i].field8) >= 15.0) {
+              if (parseFloat(fetched_data[i].field8) == 1) {
                 var li = document.createElement("li");
                 li.className = "timeline-item d-flex position-relative overflow-hidden";
 
