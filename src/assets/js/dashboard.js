@@ -7,7 +7,7 @@ function FallenGuys() {
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
     var marker = L.marker([17.447315, 78.348787]).addTo(map);
-    
+
     // Add click event listener to the map
     map.on('click', function(e) {
       var lat = e.latlng.lat;
@@ -16,21 +16,24 @@ function FallenGuys() {
       window.open(googleMapsUrl, '_blank');
     });
 
-    fetch(
-      "https://api.thingspeak.com/channels/2658268/feeds.json?api_key=FRIN88PUMDP9QGS4"
-    )
-      .then((response) => response.json())
-      .then((init_data) => {
-        fetch(
-          `https://api.thingspeak.com/channels/2658268/feeds.json?api_key=FRIN88PUMDP9QGS4&results=${init_data.channel.last_entry_id}`
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            var fetched_data = data.feeds;
+    // Fetch data from both channels
+    Promise.all([
+      fetch("https://api.thingspeak.com/channels/2658268/feeds.json?api_key=FRIN88PUMDP9QGS4"),
+      fetch("https://api.thingspeak.com/channels/2684114/feeds.json?api_key=FRIN88PUMDP9QGS4")
+    ])
+      .then(responses => Promise.all(responses.map(response => response.json())))
+      .then(([mainData, gpsData]) => {
+        // Fetch all entries from both channels
+        Promise.all([
+          fetch(`https://api.thingspeak.com/channels/2658268/feeds.json?api_key=FRIN88PUMDP9QGS4&results=${mainData.channel.last_entry_id}`),
+          fetch(`https://api.thingspeak.com/channels/2684114/feeds.json?api_key=FRIN88PUMDP9QGS4&results=${gpsData.channel.last_entry_id}`)
+        ])
+          .then(responses => Promise.all(responses.map(response => response.json())))
+          .then(([mainFullData, gpsFullData]) => {
+            var fetched_data = mainFullData.feeds;
+            var gps_data = gpsFullData.feeds;
 
-            // =====================================
-            // Angular Velocity
-            // =====================================
+            // Angular Velocity Plot
             var NangVel = {
               chart: {
                 id: "sparkline6",
@@ -80,13 +83,9 @@ function FallenGuys() {
               NangVel
             ).render();
             document.querySelector("#NangVel").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field5).toFixed(
-                1
-              ) + " rad/s";
+              parseFloat(fetched_data[fetched_data.length - 1].field5).toFixed(1) + " rad/s";
 
-            // =====================================
-            // Max Net Acceleration
-            // =====================================
+            // Max Net Acceleration Plot
             var maxNetAcc = {
               chart: {
                 id: "sparkline7",
@@ -136,71 +135,60 @@ function FallenGuys() {
               maxNetAcc
             ).render();
             document.querySelector("#maxnetacc").textContent =
-              parseFloat(fetched_data[fetched_data.length - 1].field4).toFixed(
-                1
-              ) + " m/s²";
+              parseFloat(fetched_data[fetched_data.length - 1].field4).toFixed(1) + " m/s²";
 
-            // =====================================
-            // GPS Coordinates
-            // =====================================
-            var lastEntry = fetched_data[fetched_data.length - 1];
-            var lat = parseFloat(lastEntry.field7.split(" ")[0]);
-            var lon = parseFloat(lastEntry.field7.split(" ")[1]);
-
-            if (!isNaN(lat) && !isNaN(lon)) {
-              document.querySelector("#gps").textContent = lat.toFixed(6) + ', ' + lon.toFixed(6);
-              marker.setLatLng([lat, lon]);
-              map.setView([lat, lon], 13);
+            // Update GPS Coordinates
+            var lastGPSEntry = gps_data[gps_data.length - 1];
+            if (lastGPSEntry.field7) {
+              var [lat, lon] = lastGPSEntry.field7.split(',').map(Number);
+              if (!isNaN(lat) && !isNaN(lon)) {
+                document.querySelector("#gps").textContent = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+                marker.setLatLng([lat, lon]);
+                map.setView([lat, lon], 13);
+              } else {
+                document.querySelector("#gps").textContent = "No GPS data available";
+              }
             } else {
               document.querySelector("#gps").textContent = "No GPS data available";
             }
 
-            // =====================================
             // Past Alerts
-            // =====================================
             var alertList = document.getElementById("alertList");
             alertList.innerHTML = `<li
-                      class="timeline-item d-flex position-relative overflow-hidden"
-                      id="lastAlert"
-                    >
-                      <div
-                        class="timeline-time text-dark flex-shrink-0 text-end"
-                        id="startup"
-                      >
-                        <div>2024-04-09</div>
-                        <div style="padding-bottom: 5vh">22:08:05 UTC</div>
-                      </div>
-                      <div
-                        class="timeline-badge-wrap d-flex flex-column align-items-center"
-                      >
-                        <span
-                          class="timeline-badge border-2 border border-success flex-shrink-0 my-8"
-                        ></span>
-                      </div>
-                      <div class="timeline-desc fs-3 text-dark mt-n1">
-                        Node started
-                      </div>
-                    </li>`;
-
-            document.getElementById("startup").innerHTML = `<div>${fetched_data[0].created_at.split("T")[0]
-              }</div>
-        <div style="padding-bottom: 5vh;">${fetched_data[0].created_at.split("T")[1].replace("Z", "") + " UTC"
-              }</div>`;
+              class="timeline-item d-flex position-relative overflow-hidden"
+              id="lastAlert"
+            >
+              <div
+                class="timeline-time text-dark flex-shrink-0 text-end"
+                id="startup"
+              >
+                <div>${fetched_data[0].created_at.split("T")[0]}</div>
+                <div style="padding-bottom: 5vh">${fetched_data[0].created_at.split("T")[1].replace("Z", "") + " UTC"}</div>
+              </div>
+              <div
+                class="timeline-badge-wrap d-flex flex-column align-items-center"
+              >
+                <span
+                  class="timeline-badge border-2 border border-success flex-shrink-0 my-8"
+                ></span>
+              </div>
+              <div class="timeline-desc fs-3 text-dark mt-n1">
+                Node started
+              </div>
+            </li>`;
 
             var lastAlert = document.getElementById("lastAlert");
             for (var i = fetched_data.length - 1; i >= 0; i--) {
               if (parseFloat(fetched_data[i].field8) >= 15.0) {
                 var li = document.createElement("li");
-                li.className =
-                  "timeline-item d-flex position-relative overflow-hidden";
+                li.className = "timeline-item d-flex position-relative overflow-hidden";
 
                 const utcDate = new Date(fetched_data[i].created_at);
                 const istDate = new Date(
                   utcDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
                 );
                 var div1 = document.createElement("div");
-                div1.className =
-                  "timeline-time text-dark flex-shrink-0 text-end";
+                div1.className = "timeline-time text-dark flex-shrink-0 text-end";
                 var date = document.createElement("div");
                 date.textContent = istDate
                   .toLocaleDateString("en-US", {
@@ -232,8 +220,7 @@ function FallenGuys() {
                 div2.appendChild(span2);
 
                 var div3 = document.createElement("div");
-                div3.className =
-                  "timeline-desc fs-3 text-dark mt-n1 fw-semibold";
+                div3.className = "timeline-desc fs-3 text-dark mt-n1 fw-semibold";
                 div3.textContent = "Fall Detected! ";
 
                 var fallAcc = document.createElement("span");
@@ -250,9 +237,27 @@ function FallenGuys() {
                   parseFloat(fetched_data[i].field6) ** 2
                 ).toFixed(1)} rad/s`;
                 div3.appendChild(fallAngVel);
+
+                // Find corresponding GPS data for this alert
+                var alertTime = new Date(fetched_data[i].created_at);
+                var closestGPSEntry = gps_data.reduce((prev, curr) => {
+                  var prevTime = new Date(prev.created_at);
+                  var currTime = new Date(curr.created_at);
+                  return Math.abs(currTime - alertTime) < Math.abs(prevTime - alertTime) ? curr : prev;
+                });
+
                 var GPSLoc = document.createElement("span");
                 GPSLoc.className = "text-primary d-block fw-normal";
-                GPSLoc.textContent = `GPS Location: None`;
+                if (closestGPSEntry.field7) {
+                  var [gpsLat, gpsLon] = closestGPSEntry.field7.split(',').map(Number);
+                  if (!isNaN(gpsLat) && !isNaN(gpsLon)) {
+                    GPSLoc.textContent = `GPS Location: ${gpsLat.toFixed(6)}, ${gpsLon.toFixed(6)}`;
+                  } else {
+                    GPSLoc.textContent = "GPS Location: Not available";
+                  }
+                } else {
+                  GPSLoc.textContent = "GPS Location: Not available";
+                }
                 div3.appendChild(GPSLoc);
 
                 li.appendChild(div1);
@@ -263,9 +268,7 @@ function FallenGuys() {
               }
             }
 
-            // =====================================
-            // Current Alert
-            // =====================================
+            // Current Alert Status
             if (fetched_data[fetched_data.length - 1]["field8"] === "1") {
               document.getElementById("fallAlert").style.backgroundColor =
                 "rgb(168, 34, 50)";
@@ -277,8 +280,7 @@ function FallenGuys() {
               document.getElementById("alertLogo").src =
                 "../assets/images/logos/favicon.png";
               document.getElementById("alertLogo").alt = "Fall Alert";
-            }
-            else {
+            } else {
               document.getElementById("fallAlert").style.backgroundColor =
                 "white";
               document.getElementById("fallAlert").style.borderRadius = "13px";
@@ -292,8 +294,11 @@ function FallenGuys() {
             }
           })
           .catch((error) => {
-            console.error(error);
+            console.error("Error fetching full data:", error);
           });
+      })
+      .catch((error) => {
+        console.error("Error fetching initial data:", error);
       });
   });
 }
