@@ -25,7 +25,7 @@ Adafruit_MPU6050 mpu;
 TinyGPSPlus gps;
 
 // Default Thresholds (will be updated by central node)
-int fallAcc_threshold = 50;
+int fallAcc_threshold = 30;
 int alert_threshold = 10;
 int emergencyContact = 112;
 
@@ -89,6 +89,7 @@ void setup()
         while (1)
             ;
     }
+    LoRa.setSyncWord(0xAB);
 
     delay(2000);
 }
