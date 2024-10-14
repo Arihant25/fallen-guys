@@ -16,7 +16,7 @@
 #define REVERSE_LED 4 // New reverse LED pin
 #define BUZZER_IO 27
 
-#define WIFI_TIMEOUT 5000
+#define WIFI_TIMEOUT 10000
 
 #define PASSWORD "ENTER_SUPER_SECRET_PASSWD"
 
@@ -86,10 +86,13 @@ void connectToWiFi()
         Serial.print(".");
         now = millis();
     }
-    if(WiFi.status() != WL_CONNECTED){
-      Serial.println("WiFi Unavailable! Falling back to last updated or default values");
-      Serial.printf("f: %d, a: %d, e: %d\n", fallAcc_threshold, alert_threshold, emergencyContact);
-      return;
+    if (WiFi.status() != WL_CONNECTED)
+    {
+        Serial.println("WiFi Unavailable! Falling back to last updated or default values");
+        Serial.printf("f: %d, a: %d, e: %d\n", fallAcc_threshold, alert_threshold, emergencyContact);
+        digitalWrite(LED, HIGH);
+        digitalWrite(REVERSE_LED, HIGH);
+        return;
     }
     Serial.println("\nWiFi connected");
 }
@@ -97,11 +100,12 @@ void connectToWiFi()
 void readThingSpeakThresholds()
 {
     int response = ThingSpeak.readMultipleFields(thresholdReadChannel, myReadAPIKey);
-    if(response == 200) 
-      Serial.println("Got updated thresholds from ThingSpeak");
-    else{
-      Serial.println("Connection to ThingSpeak failed. Error: " + String(response));
-      return;
+    if (response == 200)
+        Serial.println("Got updated thresholds from ThingSpeak");
+    else
+    {
+        Serial.println("Connection to ThingSpeak failed. Error: " + String(response));
+        return;
     }
     fallAcc_threshold = ThingSpeak.getFieldAsInt(1);
     alert_threshold = ThingSpeak.getFieldAsInt(2);
@@ -142,9 +146,8 @@ void loop()
                 unsigned long currentTime = millis();
                 if (currentTime - lastThingSpeakUpdate >= THINGSPEAK_INTERVAL)
                 {
-                    if(WiFi.status() != WL_CONNECTED)
-                        connectToWiFi();
-                    updateThingSpeak();
+                    if (WiFi.status() == WL_CONNECTED)
+                        updateThingSpeak();
                     lastThingSpeakUpdate = currentTime;
                 }
             }
@@ -208,7 +211,8 @@ void updateThingSpeak()
     ThingSpeak.setField(7, latestGPSLocation);
     ThingSpeak.setField(8, fallDetected ? 1 : 0);
 
-    if(password == PASSWORD){
+    if (password == PASSWORD)
+    {
         int response = ThingSpeak.writeFields(dataWriteChannelNumber, myWriteAPIKey);
 
         if (response == 200)
@@ -216,10 +220,8 @@ void updateThingSpeak()
         else
             Serial.println("ThingSpeak update failed. Error: " + String(response));
     }
-    else 
+    else
         Serial.println("Auth Failed. Cannot update ThingSpeak Data");
-
-    
 
     // Reset max values
     maxAccelMagnitude = 0;
@@ -247,7 +249,8 @@ void activateAlarm(const char *reason)
 
 void deactivateAlarm()
 {
-    digitalWrite(LED, LOW);
+    if (WiFi.status() == WL_CONNECTED)
+        digitalWrite(LED, LOW);
     digitalWrite(REVERSE_LED, HIGH); // Set reverse LED to opposite state
     digitalWrite(BUZZER_IO, LOW);
     Serial.println("ALARM DEACTIVATED");
