@@ -18,7 +18,7 @@
 
 #define WIFI_TIMEOUT 10000
 
-#define PASSWORD "ENTER_SUPER_SECRET_PASSWD"
+#define PASSWORD "CodeMonkeys"
 
 WiFiClient client;
 

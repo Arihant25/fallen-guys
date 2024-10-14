@@ -25,8 +25,8 @@ Adafruit_MPU6050 mpu;
 TinyGPSPlus gps;
 
 // Default Thresholds (will be updated by central node)
-int fallAcc_threshold = 30;
-int alert_threshold = 10;
+int fallAcc_threshold = 35;
+int alert_threshold = 5;
 int emergencyContact = 112;
 
 const unsigned long SEND_INTERVAL = 5000; // Send data every 5 seconds
