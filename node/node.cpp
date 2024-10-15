@@ -91,10 +91,10 @@ void setup()
     }
     LoRa.setSyncWord(0xAB);
 
+    delay(2000);
+
     digitalWrite(LED_ALERT, LOW);
     digitalWrite(LED_REVERSE, HIGH); // Reverse LED starts ON
-
-    delay(2000);
 }
 
 void activateAlerts()
