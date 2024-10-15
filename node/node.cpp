@@ -25,7 +25,7 @@ Adafruit_MPU6050 mpu;
 TinyGPSPlus gps;
 
 // Default Thresholds (will be updated by central node)
-int fallAcc_threshold = 35;
+int fallAcc_threshold = 30;
 int alert_threshold = 5;
 int emergencyContact = 112;
 
@@ -57,7 +57,7 @@ void setup()
 
     digitalWrite(BUZZER_PIN, LOW);
     digitalWrite(LED_ALERT, LOW);
-    digitalWrite(LED_REVERSE, HIGH); // Reverse LED starts ON
+    digitalWrite(LED_REVERSE, LOW);
 
     Serial.begin(115200);
     Serial2.begin(9600, SERIAL_8N1, GPS_RX, GPS_TX);
@@ -90,6 +90,9 @@ void setup()
             ;
     }
     LoRa.setSyncWord(0xAB);
+
+    digitalWrite(LED_ALERT, LOW);
+    digitalWrite(LED_REVERSE, HIGH); // Reverse LED starts ON
 
     delay(2000);
 }
@@ -148,8 +151,8 @@ void loop()
 
     unsigned long currentTime = millis();
 
-    if(isDelayStarted && ((currentTime - alertDelayStart) >= alert_threshold*1000))
-      fallDetected = true;
+    if (isDelayStarted && ((currentTime - alertDelayStart) >= alert_threshold * 1000))
+        fallDetected = true;
 
     if (currentTime - lastSendTime >= SEND_INTERVAL)
     {
