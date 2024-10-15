@@ -22,16 +22,14 @@
 
 WiFiClient client;
 
-// TODO: Replace with ThingSpeak channel details
+unsigned long dataWriteChannelNumber = 2684114;
+const char *myWriteAPIKey = "TTIBU3CIFKLESX0Z";
 
-unsigned long dataWriteChannelNumber;
-const char *myWriteAPIKey;
+unsigned long thresholdReadChannel = 2678150;
+const char *myReadAPIKey = "RZH4FA34SCB2XOQX";
 
-unsigned long thresholdReadChannel;
-const char *myReadAPIKey;
-
-int fallAcc_threshold = 50;
-int alert_threshold = 10;
+int fallAcc_threshold = 35;
+int alert_threshold = 5;
 int emergencyContact = 112;
 String password;
 
