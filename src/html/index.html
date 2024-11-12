@@ -1,227 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fallen Guys</title>
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="../assets/images/logos/favicon.png"
+    />
+    <link rel="stylesheet" href="../assets/css/styles.min.css" />
+    <link rel="stylesheet" href="../assets/css/our.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+      #map {
+        height: 300px;
+        width: 100%;
+      }
+    </style>
+  </head>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fallen Guys</title>
-  <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
-  <link rel="stylesheet" href="../assets/css/styles.min.css" />
-  <link rel="stylesheet" href="../assets/css/our.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <style>
-    #map {
-      height: 300px;
-      width: 100%;
-    }
-  </style>
-</head>
+  <body>
+    <div
+      class="page-wrapper mini-sidebar"
+      id="main-wrapper"
+      data-layout="vertical"
+      data-navbarbg="skin6"
+      data-sidebartype="full mini-sidebar"
+      data-sidebar-position="fixed"
+      data-header-position="fixed"
+    >
+      <!--  Main Content -->
+      <div class="body-wrapper" style="margin-left: 0">
+        <!--  Header -->
+        <header class="app-header" , style="width: 100%">
+          <div class="navie" , style="width: 100%; padding: 0">
+            <nav class="navbar navbar-expand-lg navbar-light">
+              <div
+                class="navbar-collapse justify-content-end px-0"
+                id="navbarNav"
+              >
+                <ul
+                  class="navbar-nav flex-row ms-auto align-items-center justify-content-end"
+                >
+                  <img
+                    src="../assets/images/logos/favicon.png"
+                    alt=""
+                    width="35"
+                    height="35"
+                    class="rounded-circle"
+                  />
+                  <p class="logoName">Fallen Guys</p>
+                  <div class="ai-status-indicator">
+                    <div class="status-dot disabled" id="aiStatusDot">
+                      <span class="status-label">AI Status: Disabled</span>
+                    </div>
+                  </div>
+                </ul>
+              </div>
+            </nav>
 
-<body>
-  <div class="page-wrapper mini-sidebar" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6"
-    data-sidebartype="full mini-sidebar" data-sidebar-position="fixed" data-header-position="fixed">
-    <!--  Main Content -->
-    <div class="body-wrapper" style="margin-left: 0">
-      <!--  Header -->
-      <header class="app-header" , style="width: 100%">
-        <div class="navie" , style="width: 100%; padding: 0">
-          <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
-              <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-                <img src="../assets/images/logos/favicon.png" alt="" width="35" height="35" class="rounded-circle" />
-                <p class="logoName">Fallen Guys </p>
-              </ul>
-            </div>
-          </nav>
-
-          <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
-              <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-                <a href="modify.html" class="btn btn-primary" style="
+            <nav class="navbar navbar-expand-lg navbar-light">
+              <div
+                class="navbar-collapse justify-content-end px-0"
+                id="navbarNav"
+              >
+                <ul
+                  class="navbar-nav flex-row ms-auto align-items-center justify-content-end"
+                >
+                  <a
+                    href="modify.html"
+                    class="btn btn-primary"
+                    style="
                       background-color: rgb(192, 40, 49);
                       border-color: rgb(192, 40, 49);
-                    ">
-                  Modify Thresholds
-                </a>
-              </ul>
-            </div>
-          </nav>
-        </div>
-      </header>
+                    "
+                  >
+                    Modify Thresholds
+                  </a>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </header>
 
-      <div class="container-fluid">
-        <!--  Row 1 : Current Status -->
-        <div class="row">
-          <div class="col-lg-12 d-flex align-items-stretch">
-            <div class="card w-100">
-              <div class="card-body p-4" style="
+        <div class="container-fluid">
+          <!--  Row 1 : Current Status -->
+          <div class="row">
+            <div class="col-lg-12 d-flex align-items-stretch">
+              <div class="card w-100">
+                <div
+                  class="card-body p-4"
+                  style="
                     display: flex;
                     justify-content: center;
                     align-items: right;
-                  " id="fallAlert">
-                <img src="../assets/images/loading.gif" alt="loading" id="alertLogo" width="69px" height="69px" />
-                <p id="alertText">Loading...</p>
+                  "
+                  id="fallAlert"
+                >
+                  <img
+                    src="../assets/images/loading.gif"
+                    alt="loading"
+                    id="alertLogo"
+                    width="69px"
+                    height="69px"
+                  />
+                  <p id="alertText">Loading...</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Row 2 : Sensor Readings -->
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="row">
-              <!-- Acceleration -->
-              <div class="col-lg-12">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row alig n-items-start">
-                      <div class="col-8">
-                        <h5 class="card-title mb-9 fw-semibold">
-                          Net Acceleration
-                        </h5>
-                        <h4 class="fw-semibold mb-3" id="maxnetacc">
-                          0
-                        </h4>
-                      </div>
-                      <div class="col-4">
-                        <div class="d-flex justify-content-end">
-                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
-                            style="
+          <!-- Row 2 : Sensor Readings -->
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="row">
+                <!-- Acceleration -->
+                <div class="col-lg-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="row alig n-items-start">
+                        <div class="col-8">
+                          <h5 class="card-title mb-9 fw-semibold">
+                            Net Acceleration
+                          </h5>
+                          <h4 class="fw-semibold mb-3" id="maxnetacc">0</h4>
+                        </div>
+                        <div class="col-4">
+                          <div class="d-flex justify-content-end">
+                            <div
+                              class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                              style="
                                 width: 47px;
                                 height: 47px;
                                 border-radius: 50%;
                                 background-color: #29e7cd;
-                              ">
-                            <img width="32" height="32"
-                              src="https://img.icons8.com/external-outline-black-m-oki-orlando/32/external-acceleration-physics-basic-outline-outline-black-m-oki-orlando.png"
-                              alt="acceleration icon" />
+                              "
+                            >
+                              <img
+                                width="32"
+                                height="32"
+                                src="https://img.icons8.com/external-outline-black-m-oki-orlando/32/external-acceleration-physics-basic-outline-outline-black-m-oki-orlando.png"
+                                alt="acceleration icon"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                    <div id="maxnetaccPlot"></div>
                   </div>
-                  <div id="maxnetaccPlot"></div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="col-lg-6">
-            <div class="row">
-              <!-- Gyroscope -->
-              <div class="col-lg-12">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row alig n-items-start">
-                      <div class="col-8">
-                        <h5 class="card-title mb-9 fw-semibold">
-                          Net Angular Velocity
-                        </h5>
-                        <h4 class="fw-semibold mb-3" id="NangVel">
-                          0
-                        </h4>
-                      </div>
-                      <div class="col-4">
-                        <div class="d-flex justify-content-end">
-                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
-                            style="
+            <div class="col-lg-6">
+              <div class="row">
+                <!-- Gyroscope -->
+                <div class="col-lg-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="row alig n-items-start">
+                        <div class="col-8">
+                          <h5 class="card-title mb-9 fw-semibold">
+                            Net Angular Velocity
+                          </h5>
+                          <h4 class="fw-semibold mb-3" id="NangVel">0</h4>
+                        </div>
+                        <div class="col-4">
+                          <div class="d-flex justify-content-end">
+                            <div
+                              class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                              style="
                                 width: 47px;
                                 height: 47px;
                                 border-radius: 50%;
                                 background-color: #5073b3;
-                              ">
-                            <img width="32" height="32" src="https://img.icons8.com/ios-filled/50/FFFFFF/gyroscope.png"
-                              alt="angular velocity logo" />
+                              "
+                            >
+                              <img
+                                width="32"
+                                height="32"
+                                src="https://img.icons8.com/ios-filled/50/FFFFFF/gyroscope.png"
+                                alt="angular velocity logo"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                    <div id="NangVelPlot"></div>
                   </div>
-                  <div id="NangVelPlot"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">
+              <div class="row">
+                <!-- GPS -->
+                <div class="col-lg-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="row align-items-start">
+                        <div class="col-8">
+                          <h5 class="card-title mb-9 fw-semibold">
+                            GPS Location
+                          </h5>
+                          <h4 class="fw-semibold mb-3" id="gps">0</h4>
+                        </div>
+                        <div class="col-4">
+                          <div class="d-flex justify-content-end">
+                            <div
+                              class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
+                              style="
+                                width: 47px;
+                                height: 47px;
+                                border-radius: 50%;
+                                background-color: #ef8d06;
+                              "
+                            >
+                              <img
+                                width="30"
+                                height="30"
+                                src="https://img.icons8.com/ios-filled/50/FFFFFF/marker.png"
+                                alt="location-marker"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="map"></div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="col-lg-3"></div>
-          <div class="col-lg-6">
-            <div class="row">
-              <!-- GPS -->
-              <div class="col-lg-12">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row align-items-start">
-                      <div class="col-8">
-                        <h5 class="card-title mb-9 fw-semibold">GPS Location</h5>
-                        <h4 class="fw-semibold mb-3" id="gps">0</h4>
-                      </div>
-                      <div class="col-4">
-                        <div class="d-flex justify-content-end">
-                          <div class="text-white rounded-circle p-6 d-flex align-items-center justify-content-center"
-                            style="width: 47px; height: 47px; border-radius: 50%; background-color: #ef8d06;">
-                            <img width="30" height="30" src="https://img.icons8.com/ios-filled/50/FFFFFF/marker.png"
-                              alt="location-marker" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+          <!-- Row 3 : Past Alerts -->
+          <div class="row">
+            <div class="col-lg-12 d-flex align-items-stretch">
+              <div class="card w-100">
+                <div class="card-body p-4">
+                  <div class="mb-4">
+                    <h5 class="card-title fw-semibold">Past Alerts</h5>
                   </div>
-                  <div id="map"></div>
+                  <ul
+                    class="timeline-widget mb-0 position-relative mb-n5"
+                    id="alertList"
+                  >
+                    <li
+                      class="timeline-item d-flex position-relative overflow-hidden"
+                      id="lastAlert"
+                    >
+                      <div
+                        class="timeline-time text-dark flex-shrink-0 text-end"
+                        id="startup"
+                      >
+                        <div>16-09-2024</div>
+                        <div style="padding-bottom: 5vh">04:20:00 IST</div>
+                      </div>
+                      <div
+                        class="timeline-badge-wrap d-flex flex-column align-items-center"
+                      >
+                        <span
+                          class="timeline-badge border-2 border border-success flex-shrink-0 my-8"
+                        ></span>
+                      </div>
+                      <div class="timeline-desc fs-3 text-dark mt-n1">
+                        Node started
+                      </div>
+                    </li>
+                  </ul>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Row 3 : Past Alerts -->
-        <div class="row">
-          <div class="col-lg-12 d-flex align-items-stretch">
-            <div class="card w-100">
-              <div class="card-body p-4">
-                <div class="mb-4">
-                  <h5 class="card-title fw-semibold">Past Alerts</h5>
-                </div>
-                <ul class="timeline-widget mb-0 position-relative mb-n5" id="alertList">
-                  <li class="timeline-item d-flex position-relative overflow-hidden" id="lastAlert">
-                    <div class="timeline-time text-dark flex-shrink-0 text-end" id="startup">
-                      <div>16-09-2024</div>
-                      <div style="padding-bottom: 5vh">04:20:00 IST</div>
-                    </div>
-                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                      <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
-                    </div>
-                    <div class="timeline-desc fs-3 text-dark mt-n1">
-                      Node started
-                    </div>
-                  </li>
-                </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <!-- a centered footer text citing sources for images -->
-  <footer class="footer">
-    <div class="container">
-      <div class="text-center">
-        <p>
-          Icons by
-          <a href="https://www.flaticon.com/" title="Flaticon" target="_blank">Flaticon</a>
-          and
-          <a href="https://icons8.com/" title="Icons8" target="_blank">Icons8</a>
-        </p>
+    <!-- a centered footer text citing sources for images -->
+    <footer class="footer">
+      <div class="container">
+        <div class="text-center">
+          <p>
+            Icons by
+            <a href="https://www.flaticon.com/" title="Flaticon" target="_blank"
+              >Flaticon</a
+            >
+            and
+            <a href="https://icons8.com/" title="Icons8" target="_blank"
+              >Icons8</a
+            >
+          </p>
+        </div>
       </div>
-    </div>
-  </footer>
-  <script src="../assets/libs/jquery/dist/jquery.min.js"></script> <!-- jQuery -->
-  <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <!-- Bootstrap -->
-  <script src="../assets/js/app.min.js"></script>
-  <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script> <!-- Apex Charts -->
-  <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
-  <script src="../assets/js/dashboard.js"></script>
-</body>
-
+    </footer>
+    <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+    <!-- jQuery -->
+    <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../assets/js/app.min.js"></script>
+    <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <!-- Apex Charts -->
+    <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
+    <script src="../assets/js/dashboard.js"></script>
+  </body>
 </html>

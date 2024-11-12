@@ -1,44 +1,92 @@
 .navie {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
+  --bs-gutter-x: 24px;
+  --bs-gutter-y: 0;
+  width: 100%;
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  margin-right: auto;
+  margin-left: auto;
 
-    --bs-gutter-x: 24px;
-    --bs-gutter-y: 0;
-    width: 100%;
-    padding-right: calc(var(--bs-gutter-x) * 0.5);
-    padding-left: calc(var(--bs-gutter-x) * 0.5);
-    margin-right: auto;
-    margin-left: auto;
-
-
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 30px;
 }
 
 .logoName {
-    height: 100%;
-    width: 150px;
-    margin: 0;
-    margin-left: 7px;
+  height: 100%;
+  width: 150px;
+  margin: 0;
+  margin-left: 7px;
 
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: orangered;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: orangered;
 }
 
 #alertText {
-    color: black;
-    
-    margin: 0;
-    margin-left: 11px;
+  color: black;
 
-    font-size: calc(min(3rem, 11vw));
-    font-weight: 690;
+  margin: 0;
+  margin-left: 11px;
+
+  font-size: calc(min(3rem, 11vw));
+  font-weight: 690;
 }
 
 .params {
-    padding-bottom: 17px;
+  padding-bottom: 17px;
+}
+
+.ai-status-indicator {
+  /* position: fixed;
+  top: 30px;
+  left: 20%; */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.status-dot.enabled {
+  background-color: #2ecc71;
+  box-shadow: 0 0 8px #2ecc71;
+}
+
+.status-dot.disabled {
+  background-color: #e74c3c;
+  box-shadow: 0 0 8px #e74c3c;
+}
+
+.status-label {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 5px;
+}
+
+.ai-status-indicator:hover .status-label {
+  visibility: visible;
+  opacity: 1;
 }

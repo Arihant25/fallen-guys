@@ -26,11 +26,24 @@
       <div class="body-wrapper" style="margin-left: 0">
         <!--  Back to Home -->
         <header class="app-header" , style="width: 100%">
-          <div class="navie", style="width: 100%; justify-content: right; padding: 0">
+          <div
+            class="navie"
+            ,
+            style="width: 100%; justify-content: right; padding: 0"
+          >
             <nav class="navbar navbar-expand-lg navbar-light">
-              <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
-                <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-                  <a href="index.html" class="btn btn-primary" style="background-color: #28E7CD; border-color: #28E7CD;">
+              <div
+                class="navbar-collapse justify-content-end px-0"
+                id="navbarNav"
+              >
+                <ul
+                  class="navbar-nav flex-row ms-auto align-items-center justify-content-end"
+                >
+                  <a
+                    href="index.html"
+                    class="btn btn-primary"
+                    style="background-color: #28e7cd; border-color: #28e7cd"
+                  >
                     Go Back
                   </a>
                 </ul>
@@ -82,7 +95,8 @@
                           min="0"
                         />
                         <div id="alertHelp" class="form-text">
-                          Seconds to wait before sending an alert after fall detection.
+                          Seconds to wait before sending an alert after fall
+                          detection.
                         </div>
                       </div>
 
@@ -117,6 +131,20 @@
                         />
                       </div>
 
+                      <!-- Machine Learning -->
+                      <div class="mb-3 form-check params">
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          id="mlEnable"
+                          checked
+                        />
+                        <label class="form-check-label" for="ml">
+                          Enable Machine Learning powered automatic threshold
+                          management
+                        </label>
+                      </div>
+
                       <!-- Terms & Conditions -->
                       <div class="mb-3 form-check params">
                         <input
@@ -125,13 +153,20 @@
                           id="accepted"
                         />
                         <label class="form-check-label" for="accepted">
-                          I take full responsibility for the modifications I am about to perform. I recognise the
-                          fact that any damage caused due to these changes will be my responsibility henceforth.
+                          I take full responsibility for the modifications I am
+                          about to perform. I recognise the fact that any damage
+                          caused due to these changes will be my responsibility
+                          henceforth.
                         </label>
                       </div>
 
                       <!-- Submit Button -->
-                      <button type="submit" class="btn btn-primary" id="submit" style="background-color: #5073B3; border-color: #5073B3;">
+                      <button
+                        type="submit"
+                        class="btn btn-primary"
+                        id="submit"
+                        style="background-color: #5073b3; border-color: #5073b3"
+                      >
                         Submit
                       </button>
                     </form>

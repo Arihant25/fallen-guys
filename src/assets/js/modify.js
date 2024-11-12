@@ -6,6 +6,7 @@ submitBtn.addEventListener("click", function (event) {
   var alertDelay = document.getElementById("alert").value;
   var emergencyContact = document.getElementById("emergencyContact").value;
   var password = document.getElementById("password").value;
+  var mlEnable = document.getElementById("mlEnable").checked;
   var accepted = document.getElementById("accepted").checked;
 
   if (isNaN(fallAcc)) {
@@ -22,7 +23,7 @@ submitBtn.addEventListener("click", function (event) {
   }
   else {
     fetch(
-      `https://api.thingspeak.com/update?api_key=GJRF5PDPH9MKTT54&field1=${fallAcc}&field2=${alertDelay}&field3=${emergencyContact}&field4=${password}`
+      `https://api.thingspeak.com/update?api_key=GJRF5PDPH9MKTT54&field1=${fallAcc}&field2=${alertDelay}&field3=${emergencyContact}&field4=${password}&field5=${mlEnable}`,
     )
       .then((response) => response.json())
       .then((data) => {
