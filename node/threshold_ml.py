@@ -19,9 +19,15 @@ PASSWORD = "CodeMonkeys"
 def fetch_thingspeak_data():
     """Fetch all relevant data from ThingSpeak"""
     url = f"https://api.thingspeak.com/channels/{
-        CHANNEL_ID}/feeds.json?api_key={READ_API_KEY}&results=250"
+        CHANNEL_ID}/feeds.json?api_key={READ_API_KEY}&results=0"
 
     try:
+        response = requests.get(url)
+        data = response.json()
+        n_data_points = int(data['channel']['last_entry_id'])
+        url = f"https://api.thingspeak.com/channels/{
+            CHANNEL_ID}/feeds.json?api_key={READ_API_KEY}&results={n_data_points - 500}"
+        
         response = requests.get(url)
         data = response.json()
         feeds = data['feeds']
