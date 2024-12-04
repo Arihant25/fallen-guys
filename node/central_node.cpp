@@ -1,3 +1,5 @@
+// Central node code
+
 #include <WiFi.h>
 #include <ThingSpeak.h>
 #include <SPI.h>
@@ -67,7 +69,8 @@ void setup()
     LoRa.setSyncWord(0xAB);
 
     // Read initial thresholds from ThingSpeak
-    readThingSpeakThresholds();
+    if (WiFi.status() == WL_CONNECTED)
+        readThingSpeakThresholds();
 
     digitalWrite(REVERSE_LED, HIGH); // Set reverse LED to opposite state
 }
@@ -97,18 +100,26 @@ void connectToWiFi()
 
 void readThingSpeakThresholds()
 {
-    int response = ThingSpeak.readMultipleFields(thresholdReadChannel, myReadAPIKey);
+    int response;
+
+    response = ThingSpeak.readMultipleFields(thresholdReadChannel, myReadAPIKey);
     if (response == 200)
-        Serial.println("Got updated thresholds from ThingSpeak");
+    {
+        fallAcc_threshold = ThingSpeak.getFieldAsInt(1);
+        alert_threshold = ThingSpeak.getFieldAsInt(2);
+        emergencyContact = ThingSpeak.getFieldAsInt(3);
+        password = ThingSpeak.getFieldAsString(4);
+
+        Serial.println("Got updated fallAcc_threshold = " + String(fallAcc_threshold));
+        Serial.println("Got updated alert_threshold = " + String(alert_threshold));
+        Serial.println("Got updated emergencyContact = " + String(emergencyContact));
+        Serial.println("Got updated password = " + String(password));
+    }
     else
     {
         Serial.println("Connection to ThingSpeak failed. Error: " + String(response));
-        return;
     }
-    fallAcc_threshold = ThingSpeak.getFieldAsInt(1);
-    alert_threshold = ThingSpeak.getFieldAsInt(2);
-    emergencyContact = ThingSpeak.getFieldAsInt(3);
-    password = ThingSpeak.getFieldAsString(4);
+    return;
 }
 
 uint16_t calculateChecksum(const String &message)
@@ -145,7 +156,10 @@ void loop()
                 if (currentTime - lastThingSpeakUpdate >= THINGSPEAK_INTERVAL)
                 {
                     if (WiFi.status() == WL_CONNECTED)
+                    {
                         updateThingSpeak();
+                        // readThingSpeakThresholds();
+                    }
                     lastThingSpeakUpdate = currentTime;
                 }
             }
@@ -219,15 +233,17 @@ void updateThingSpeak()
             Serial.println("ThingSpeak update failed. Error: " + String(response));
     }
     else
+    {
         Serial.println("Auth Failed. Cannot update ThingSpeak Data");
-
+        return;
+    }
     // Reset max values
     maxAccelMagnitude = 0;
     maxNetGyro = 0;
     fallDetected = false;
 
     // Read updated thresholds
-    readThingSpeakThresholds();
+    // readThingSpeakThresholds();
 
     // Send updated thresholds to end-user node
     String thresholdMessage = "THRESHOLDS:" + String(fallAcc_threshold) + "," + String(alert_threshold) + "," + String(emergencyContact);
